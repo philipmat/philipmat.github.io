@@ -3,8 +3,9 @@ BODY {
 	padding: 0;
 }
 BODY * {
-	font-family: 'Lucida Grande', Verdana, Arial, sans-serif;
-	font-size: 1em;
+	font-family: 'Lucida Grande', Calibri, "Lucida Sans Unicode", Helvetica, Verdana, Arial, sans-serif;
+	/*font-size: 1em;*/
+	font-size: 12px;
 	line-height: 150%;
 }
 A, A:active {

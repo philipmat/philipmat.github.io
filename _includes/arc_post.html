@@ -1,7 +1,7 @@
 <div class="post">
-	<h3 class="title">
+	<h2 class="title">
 		<a href="{{ post.url }}">{{ post.title }}</a>
-	</h3>
+	</h2>
 	<div class="date">{% if last_date != post.date %}{{ post.date |  date: "%Y-%m-%d" }}{% endif %}</div>
 	{% if post.snippet %}
 	<div class="post-body">
