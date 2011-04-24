@@ -4,13 +4,15 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		
-		<title>{{ page.title }} . PhilipMat</title>
+		<title>{% if page.title %}{{ page.title }} @ {% endif %}PhilipMat</title>
 		<link media="screen" rel="stylesheet" type="text/css" href="/media/css/stirred.css" />
 		<link media="screen" rel="stylesheet" type="text/css" href="/media/css/highlight.css" />
 	</head>
 	<body>
 		{% include title.html %}
 		{% include sidebar.html %}
+		<div id="content">
 		{{ content }}
+		</div>
 	</body>
 </html>

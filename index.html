@@ -1,5 +1,5 @@
 ---
-layout: main
+layout: base
 ---
 {% for post in site.posts limit:5 %}
 {% include post.html %}
@@ -7,5 +7,6 @@ layout: main
 
 
 <div id="bottom"></div>
-{% include footer.html %}
+{% include blog_archive_footer.html %}
 
+{% include copyright.html %}

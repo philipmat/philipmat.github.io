@@ -1,5 +1,6 @@
+markdown: rdiscount
 pygments: true
 exclude: 
  - ./_drafts
  - README
-# permalink: /:year:month:day
+permalink: /:year/:month:day

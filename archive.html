@@ -2,9 +2,12 @@
 title: Archive
 layout: base
 ---
-<div id="content" class="archive">
+<div class="archive">
 	{% for post in site.posts offset:5 %}
 	{% include arc_post.html %}
 	{% assign last_date = post.date %}
 {% endfor %}
 </div>
+
+
+{% include copyright.html %}
