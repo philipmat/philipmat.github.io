@@ -1,17 +1,17 @@
-html { font-size: 13px; }
+html { font-size: 14px; }
 body { 
 	background: #fcfcfc;
-	font: normal 1em/1.5 "Lucida Grande", "Calibri", "Lucida Sans Unicode", Helvetica, sans-serif;
+	font: normal 1em/1.5 "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, sans-serif;
 	margin: 0; padding: 0; 
 }
 
 :focus { outline: 0; }
 a, a:active, a:visited {
-  color: #aa2200;
-  text-decoration: none;
+	color: #aa2200;
+	text-decoration: none;
 }
 a:hover {
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 a img { border: 0; }
@@ -31,7 +31,7 @@ code {
 	font-family: 'Menlo Regular', 'Bitstream Vera Sans Mono', 'Andale Mono', Consolas, monospace;
 	white-space: pre; 
 }
-
+abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 
 
 #title {
@@ -40,19 +40,13 @@ code {
 	margin: 0;
 	padding: 0;
 	background-color: #000000;
-	/*border-bottom: 4px solid #888;*/
 }
 #title H1 {
 	float: left;
 	margin: 20px 0 0 80px;
-	/*border: 4px solid #888;
-	border-top: 0;*/
-	-webkit-border-bottom-right-radius: 8px;
-	-webkit-border-bottom-left-radius: 8px;
-	-moz-border-radius-bottomright: 8px;
-	-moz-border-radius-bottomleft: 8px;
-	border-bottom-right-radius: 8px;
-	border-bottom-left-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px; -webkit-border-bottom-right-radius: 8px;
+	-moz-border-radius-bottomleft: 8px; -moz-border-radius-bottomright: 8px;
+	border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
 
 	padding: 0 30px 6px 30px;
 	color: #fcfcfc;
@@ -69,14 +63,9 @@ code {
 	left: 240px;
 	font-weight: bold;
 	margin: 7px 2em 0 0;
-	/*border: 4px solid #888;
-	border-bottom: 0;*/
-	-webkit-border-top-left-radius: 8px;
-	-webkit-border-top-right-radius: 8px;
-	-moz-border-radius-topleft: 8px;
-	-moz-border-radius-topright: 8px;
-	border-top-left-radius: 8px;
-	border-top-right-radius: 8px;
+	-webkit-border-top-left-radius: 8px;  -webkit-border-top-right-radius: 8px;
+	-moz-border-radius-topleft: 8px; -moz-border-radius-topright: 8px;
+	border-top-left-radius: 8px; border-top-right-radius: 8px;
 	padding: 0 1em 0.2em 1em;
 	background-color: #fcfcfc;
 	list-style-type: none;
@@ -90,17 +79,17 @@ code {
 
 #dsidebar { border: 1px solid red }
 #sidebar {
-    color: #777777;
+	color: #777777;
 	font-size: smaller;
-    position: absolute;
-    left: 700px;
-    top: 80px;
-    margin: 0;
-    width: 200px;
+	position: absolute;
+	left: 700px;
+	top: 80px;
+	margin: 0;
+	width: 200px;
 }
 #sidebar a, #sidebar a:active, #sidebar a:visited {
-  color: #777777;
-  font-weight: bold;
+	color: #777777;
+	font-weight: bold;
 }
 #sidebar .projects {
 	margin-bottom: 1em;
@@ -178,16 +167,6 @@ code {
 .body LI > CODE {
 	background-color: #eee;
 }
-/*
-.body BLOCKQUOTE {
-	border-left: 1px solid #777777 !important;
-	margin-bottom: 18px !important;
-	margin-left: -11px !important;
-	padding-left: 10px !important;
-	color: #808080;
-}	
-*/
-
 .post .feedback {
 	margin: 40px 30px 0 30px;
 	font-size: smaller;
@@ -209,13 +188,12 @@ code {
 	padding-bottom: 3em;
 }
 /* Supporting pygmentize: */
-.highlight {                                                             
-}
-.highlight * {                                                             
-    font-family: 'Menlo Regular', 'Bitstream Vera Sans Mono', 'Andale Mono', Consolas, monospace;
+.highlight {}
+.highlight * {
+	font-family: 'Menlo Regular', 'Bitstream Vera Sans Mono', 'Andale Mono', Consolas, monospace;
 	line-height: 100%;
 }
-pre{
+pre {
 	background-color:#eee;
 	border:1px solid #ddd;
 	padding:5px;
@@ -231,6 +209,4 @@ pre::-webkit-scrollbar {height:8px;width:8px;}
 pre::-webkit-scrollbar-track-piece {margin-bottom:10px;background-color:#e5e5e5;border-bottom-left-radius:4px 4px;border-bottom-right-radius:4px 4px;border-top-left-radius:4px 4px;border-top-right-radius:4px 4px;}
 pre::-webkit-scrollbar-thumb:vertical {height:25px;background-color:#ccc;-webkit-border-radius:4px;-webkit-box-shadow:0 1px 1px rgba(255,255,255,1);}
 pre::-webkit-scrollbar-thumb:horizontal {width:25px;background-color:#ccc;-webkit-border-radius:4px;}
-
-
 

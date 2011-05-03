@@ -9,8 +9,10 @@ It seemed fitting, when I first thought about it, that my first blog post should
 
 There are several static site generators/engines you can choose from and your choice is most likely bound by either what features your hosting provider offers or by language preference. 
 On the Ruby planet [Jekyll][jekyll], [Webby](http://webby.rubyforge.org/), and [nanoc](http://nanoc.stoneship.org/) are the most popular choices.  
+
 Robert Rees has [an excellent comparison](http://rrees.wordpress.com/2009/06/01/semi-static-cmss/) of the Ruby engines, which he calls "Semi-static CMSs". His article was written in June 2009, but you'll find it very much pertinent as two years later these three engines are still firing on all pistons. Largely based on Robert's review, I have selected *Jekyll* to represent the Ruby side.  
- With Python you have [Hyde](http://ringce.com/hyde) and that's pretty much it.  
+
+With Python you have [Hyde](http://ringce.com/hyde) and that's pretty much it.  
 
 With a static website generator you will spend most of your time producing the content and a little bit less fidgeting with the layout. Ironically, Jekyll and Hyde lend themselves quite well to a head to head comparison on both features. Not only do both support [Markdown](http://daringfireball.net/projects/markdown/) and [Textile](http://www.textism.com/tools/textile/) for writing the content, their templating languages are very similar too: Hyde uses the Django templating language, whereas Jekyll uses [Liquid][liquid], whose inspiration was, surprise!, the Django templating language.
 
