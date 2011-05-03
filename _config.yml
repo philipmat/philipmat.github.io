@@ -3,4 +3,5 @@ pygments: true
 exclude: 
  - ./_drafts
  - README
+ - Rakefile
 permalink: /:year/:month:day
