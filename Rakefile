@@ -70,9 +70,11 @@ desc 'DreamHost tasks'
 namespace :dh do
 	@params = %w[-avze ssh --delete _site/]
 	@dh = "dreamhost:~/philipm.at/"
+	desc 'Tests the DreamHost upload'
 	task :testupload do
 		system(['rsync','--dry-run',@params,@dh].join(' '))
 	end
+	desc 'Uploads the site to DreamHost'
 	task :upload do
 		system(['rsync',@params,@dh].join(' '))
 	end
