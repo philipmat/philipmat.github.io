@@ -24,12 +24,14 @@ h1 { font-size: 2em; line-height: 1.5; }
 h2 { font-size: 1.75em; line-height: 1; }
 h3 { font-size: 1.4em; line-height: 1.07; }
 
-ul, ol { list-style-position: outside; margin: 0 0 1.5em; padding: 0; }
+ul, ol { list-style-position: outside; margin: 0 0 1.5em; padding: 0}
+ol { padding-left: 1.5em}
+li ul, li ol { margin: 0; padding-left: 1.5em; }
 blockquote { border-left: 2px solid #777777; color: #777777; margin: 1.5em 30px; padding: 0 1em; }
 blockquote ul, blockquote ol { margin: 0 1.5em 1.5em; }
-code { 
+code, samp, var { 
 	font-family: 'Menlo Regular', 'Bitstream Vera Sans Mono', 'Andale Mono', Consolas, monospace;
-	white-space: pre; 
+	/*white-space: pre; */
 }
 abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 
@@ -164,7 +166,12 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 	margin-top: 1.5em;
 }
 .body P > CODE ,
-.body LI > CODE {
+.body P > SAMP ,
+.body P > VAR ,
+.body LI > CODE ,
+.body LI > SAMP ,
+.body LI > VAR
+{
 	background-color: #eee;
 }
 .post .feedback {
