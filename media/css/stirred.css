@@ -108,6 +108,14 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 	width: 600px;
 	margin: 60px 0 0 80px
 }
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+	text-shadow: #777777 1px 1px 1px;
+}
 
 /* static page*/
 .page {

@@ -55,7 +55,7 @@ Turns out that this behavior is required by the stardard. To translate in slight
 
 <A name="tldr"> </A>
 
-## Conclusion
+## conclusion
 
 When called *without* the `/g` option, [`string.match`][match] behaves exactly like [`RegExp.exec`][exec]: it returns one (the first) descriptive match at the time and relies on you calling it multiple times to retrieve more matches. 
 
