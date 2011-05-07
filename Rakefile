@@ -60,9 +60,10 @@ task :publish do
 		# TODO: handle error
 		date = Date.parse(date)
 	end
-	require 'fileutils'
-	puts file + " => ./_posts/#{date.to_s}-" + File.basename(file)
-	FileUtils.mv(file, "./_posts/#{date.to_s}-" + File.basename(file))
+	src = File.expand_path(file) 
+	dest = File.expand_path("./_posts/#{date.to_s}-" + File.basename(file))
+	puts "from #{src} \n to  #{dest}"
+	File.rename(src, dest)
 	# TODO: update the header in the file
 end
 
