@@ -5,18 +5,20 @@ layout: page
 
 Here are some projects I worked on:
 
-### Current (alpha stage)
+### In the lab (alpha stage)
 
-* [squeaky](squeaky.html)
 * [Highlighter](highlighter.html)
 
-### Active (released)
+### In the wild (beta stage)
 
+* [squeaky](squeaky.html)
+
+### Fully grown (released)
  
 
 ### Long dead (or zombified) but still proud of
 
 * [ProjectBench](http://projectbench.sourceforge.net)
-
+* [Copy URL+](http://copyurlplus.mozdev.org/)
 
 
