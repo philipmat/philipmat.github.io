@@ -12,7 +12,9 @@ On the Ruby planet [Jekyll][jekyll], [Webby](http://webby.rubyforge.org/), and [
 
 Robert Rees has [an excellent comparison](http://rrees.wordpress.com/2009/06/01/semi-static-cmss/) of the Ruby engines, which he calls "Semi-static CMSs". His article was written in June 2009, but you'll find it very much pertinent as two years later these three engines are still firing on all pistons. Largely based on Robert's review, I have selected **Jekyll** to represent the Ruby side.  
 
-With Python you have [Hyde](http://ringce.com/hyde) and that's pretty much it.  
+With Python you have [Hyde](http://ringce.com/hyde) and that's pretty much it. 
+
+PHP fares about the same: [Stacey](http://staceyapp.com/) seems to power quite a good deal of small websites. But on the horizon, on account of his creator, a higher profile engine might end up being [Marco Arment](http://marco.org)'s [Second Crack](http://www.marco.org/secondcrack), whenever he decides to open source it. I've decided not to include PHP in this comparison because I'm prejudiced to believe that PHP folks are more in the dynamic website camp, given how easy PHP is to get up and go with.
 
 With a static website generator you will spend most of your time producing the content and about the same fidgeting with the layout. Ironically, **Jekyll** and **Hyde** lend themselves quite well to a head to head comparison on both features. Not only do both support [Markdown](http://daringfireball.net/projects/markdown/) and [Textile](http://www.textism.com/tools/textile/) for writing the content, their templating languages are very similar too: Hyde uses the [Django templating language][django_template], whereas Jekyll uses [Liquid][liquid], whose inspiration was, surprise!, the Django templating language.
 
