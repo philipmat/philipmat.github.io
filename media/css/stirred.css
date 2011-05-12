@@ -158,6 +158,8 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 	color: #777777;
 	font-size: smaller;
 }
+.post .body P {
+}
 .archive .post .body P {
 	margin: 0;
 }
