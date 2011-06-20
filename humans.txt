@@ -1,0 +1,18 @@
+/* TEAM */
+	Janitor: Philip Mateescu
+	Contact: contact [at] philipm.at
+	Twitter: @philipmatix
+	From: Houston, TX
+
+/* THANKS */
+	Layout inspiration: Marco Arment
+	Twitter: @marcoarment
+
+	Original theme: Bill Israel
+	URL: http://www.tumblr.com/theme/11084
+
+/* SITE */
+	Last update: 2011/06/15
+	Language: English
+	Doctype: XHTML
+	Software: MacVim, jekyll
