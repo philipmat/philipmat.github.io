@@ -5,7 +5,7 @@ layout: post
 
 A great deal of smart people blogged and [spoke on podcasts](http://5by5.tv/) about all the new features in OS X 10.7 aka Lion. 
 
-But there's two features that albeit not life-saving improve the quality of life quite considerably and
+But there are two features that albeit not life-saving improve the quality of life quite considerably and
 have been at the forefront of Mac <strike>critique</strike> switcher pain since... well, OS X.
 
 ## #1: resize from any edge
