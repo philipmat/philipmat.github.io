@@ -191,7 +191,17 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 	color: #777777;
 }
 
-
+.post .footnotes hr,
+.post hr.footnotes
+{
+	margin-left: 0;
+	margin-bottom: 1em;
+	margin-top: 5em;
+	width: 8em;
+	border-color: #777777;
+	border-style: solid;
+	border-width: 1px 0 0 0;
+}
 
 #copyright {
 	color: #777777;
