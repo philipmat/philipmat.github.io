@@ -1,5 +1,5 @@
 ---
-title: Three ways to indent JSON
+title: three ways to indent JSON
 layout: post
 ---
 
