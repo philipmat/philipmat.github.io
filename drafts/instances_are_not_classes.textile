@@ -15,6 +15,7 @@ along with what I think it's a bug in a core .Net class.
 
 * "data binding and interfaces":#databinding_and_interfaces
 * "the devil is in the code":#devil
+* "interface inheritance":#inheritance
 * "when in doubt":#when_in_doubt
 * "conclusion":#tldr
 
@@ -22,17 +23,17 @@ Throughout this post I will use two interface and two classes implementing them 
 
 {% highlight csharp %}
 interface IBase {
-	string BaseMethod();
+  string BaseMethod();
 }
 interface IDerived : IBase {
-	string DerivedMethod();
+  string DerivedMethod();
 }
 
 class Base: IBase {
-	public string BaseMethod() { return "BaseMethod"; }
+  public string BaseMethod() { return "BaseMethod"; }
 }
 class Derived : Base, IDerived {
-	public string DerivedMethod() { return "DerivedMethod"; }
+  public string DerivedMethod() { return "DerivedMethod"; }
 }
 {% endhighlight %}
 
@@ -46,38 +47,47 @@ Even before Uncle Bob articulated the "SOLID principles":http://blog.objectmento
 
 It only makes sense that we apply the DIP to "MVVM (Model View ViewModel)":http://en.wikipedia.org/wiki/MVVM, as it shows in this overly simplistic example:
 
-{%highlight csharp %)
+{%highlight csharp %}
 class MyForm : Form {
-	public IBase Base { get; set; }
-	public IDerived Derived { get ; set; }
-	protected override void OnLoad(EventArgs e) {
-		this.Text += ":" + (Base == null ? "Base is null" : Base.BaseMethod());
-		this.Text += ":" + (Derived == null ? "Derived is null" : Derived.DerivedMethod());
-	}
+  public IBase Base { get; set; }
+  public IDerived Derived { get ; set; }
+  protected override void OnLoad(EventArgs e) {
+    this.Text += ":" + (Base == null 
+                          ? "Base is null" 
+                          : Base.BaseMethod());
+    this.Text += ":" + (Derived == null 
+                          ? "Derived is null" 
+                          : Derived.DerivedMethod());
+  }
 }
 class MyViewModel  {
-	public IBase Base { get { return new Base(); } }
-	public IDerived Derived { get { return new Derived(); } }
+  public IBase Base { get { return new Base(); } }
+  public IDerived Derived { get { return new Derived(); } }
 }
 {% endhighlight %}
 
 MVVM was designed to make use of binding of properties, @DataBinding@ to be more specific:
 
-{% highsight csharp %}
+{% highlight csharp %}
 void Main()
 {
-	MyForm viewBase = new MyForm { Text = "Base" }, viewDerived = new MyForm { Text = "Derived" };
-	var viewModel = new MyViewModel();
+  MyForm viewBase = new MyForm { Text = "Base" }, 
+         viewDerived = new MyForm { Text = "Derived" };
+  var viewModel = new MyViewModel();
 
-	viewBase.DataBindings.Add("Base", viewModel, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
-	viewDerived.DataBindings.Add("Derived", viewModel, "Derived", false, DataSourceUpdateMode.OnPropertyChanged);
+  viewBase.DataBindings.Add("Base", viewModel, "Base", 
+                            false, 
+                            DataSourceUpdateMode.OnPropertyChanged);
+  viewDerived.DataBindings.Add("Derived", viewModel, "Derived", 
+                               false, 
+                               DataSourceUpdateMode.OnPropertyChanged);
 
-	viewBase.Show();
-	viewDerived.Show();
+  viewBase.Show();
+  viewDerived.Show();
 }
 {% endhighlight %}
 
-Running that code ("here are the script":/media/files/databinding.linq to use with "LINQPad":http://www.linqpad.net/) you'd expect to get two windows with titles "Base:BaseMethod" and respectively "Derived:DerivedMethod", instead you get two big, fat, @FormatExceptions@ which make as much sense as a fish with a bicycle:
+Running that code ("here is the script":/media/files/databinding.linq to use with "LINQPad":http://www.linqpad.net/) we'd expect to get two windows with titles "Base:BaseMethod" and respectively "Derived:DerivedMethod", instead we get two big, fat, @FormatException@s (full stack trace "here":https://gist.github.com/1283578#file_gistfile1.txt) which make as much sense as a fish with a bicycle:
 
 pre. System.FormatException: Cannot format the value to the desired type.
    at System.Windows.Forms.Binding.FormatObject(Object value)
@@ -94,23 +104,121 @@ pre. System.FormatException: Cannot format the value to the desired type.
    at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
    at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
 
-(Full stack trace "here":https://gist.github.com/1283578#file_gistfile1.txt)
 
 Cannot _format_?! And format what - a @Base@ into an @IBase@? How is that possible?
 
 
+h2. the devil is in the code
+
+Very puzzled, I pulled out a decompiler, "JetBrains' dotPeek":http://www.jetbrains.com/decompiler/, took a look at @Binding.FormatObject(Object)@ and found these interesting lines:
+
+{% highlight csharp %}
+// propertyType is typeof(IBase)
+// value is our new Base()
+// so is obj1
+if (propertyType == typeof (object))
+  return value;
+if (obj1 != null && 
+	 (obj1.GetType().IsSubclassOf(propertyType) || 
+	 obj1.GetType() == propertyType))
+  return obj1;
+{% endhighlight %}
+
+I'm pretty sure this would've jumped out at you, dear reader, because you're so much smarter, but in my head it didn't make any sense; I thought "of course @Base@ is a child of @IBase@ - what's your problem?".
+
+Yes, @Base@ is a _child_ of @IBase@, for very fuzzy values of _child_, but it is not a _subclass_ of @IBase@: @Base@ _implements_ @IBase@ but does not _inherit_ from @IBase@. Stay with me, good stuff to come shortly.
+
+Well, let's debate that later, how do we fix it?
+
+Obviously we could change @MyForm.Base@ to be of type @Base@ and @MyForm.Derived@ to be of either type @Derived@ or @Base@. That would work just fine, if you happen to dislike abstractions.
+
+The next few instructions in @Binding.FormatObject@ contain another answer:
+
+{% highlight csharp %}
+TypeConverter converter = 
+    TypeDescriptor.GetConverter(value != null 
+                                ? value.GetType() 
+                                : typeof (object));
+if (converter != null && converter.CanConvertTo(propertyType))
+  return converter.ConvertTo(value, propertyType);
+{% endhighlight %}
+
+You can "read more":http://msdn.microsoft.com/en-us/library/system.componentmodel.typeconverter.aspx about the @TypeConverter@, while I create one for the @Derived@ class and then decorate it using the @TypeConverterAttribute@:
+
+{% highlight csharp %}
+class DerivedConverter : TypeConverter {
+  private readonly Type typeD = typeof(Derived);
+  public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) {
+    if (destinationType.IsAssignableFrom(typeD)) 
+      return true;
+    return base.CanConvertFrom(context, destinationType);
+   }
+   
+  public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, 
+         object value, Type destinationType) {  
+    if (destinationType.IsAssignableFrom(typeD)) 
+      return value;
+    return base.ConvertTo(context, culture, value, destinationType);
+  }
+}
+
+[TypeConverter(typeof(DerivedConverter))]
+class Derived : Base, IDerived {
+  public string DerivedMethod(){return "DerivedMethod"; }
+}
+
+{% endhighlight %}
+
+Kind of silly, isn't it?
+
+At this point, I did what any sane developer would do when faced with this solution: bitch on Twitter. Rory Primrose ("@roryprimrose":https://twitter.com/roryprimrose - you should follow him) "replied":https://twitter.com/roryprimrose/status/123877774829158400 with an example of his own, this one around interface inheritance.
 
 
+<a name="inheritance"> </a>
+
+h2. interface inheritance
+"His assumption":http://www.neovolve.com/post/2008/07/03/reflection-pop-quiz-does-interface-inheritance-exist.aspx was that calling @Type.GetMethods@ on a derived interface would also return the methods of its parent(s).
+
+I had to try and cook some of "my own code":/media/files/interfaces_are_not_classes.linq and here are the surprising results:
+
+{% highlight csharp %}
+
+BindingFlags inst_pub = BindingFlags.Instance | BindingFlags.Public,
+  flat_inst_pub = BindingFlags.FlattenHierarchy | inst_pub,
+  decl_inst_pub = BindingFlags.DeclaredOnly | inst_pub;
+Action<string, Array> logm = (s, a) => a.Length.Dump(s);
+
+Derived d = new Derived();
+Type iB = typeof(IBase),
+iD = typeof(IDerived),
+cB = typeof(Base),
+cD = d.GetType();
+
+logm("Instance | Public", iD.GetMethods(inst_pub));                   //=> 1
+logm("Flatten | Instance | Public", iD.GetMethods(flat_inst_pub));    //=> 1
 
 
+logm("Instance | Public", cD.GetMethods(inst_pub));                   //=> 6
+logm("Flatten | Instance | Public", cD.GetMethods(flat_inst_pub));    //=> 6
+logm("Declared | Instance | Public", cD.GetMethods(decl_inst_pub));   //=> 1
 
+cD.IsSubclassOf(cB).Dump("Derived subclass of Base?");                //=> True
+(d is Base).Dump("Derived is Base");                                  //=> True
+cD.IsSubclassOf(iD).Dump("Derived subclass of IDerived?");            //=> False
+(d is IDerived).Dump("Derived is IDerived");                          //=> True
 
+iD.IsAssignableFrom(cD).Dump("Derived assignable to IDerived?");       //=> True
+iD.IsSubclassOf(iB).Dump("IDerived subclass of IBase?");               //=> False
+iB.IsAssignableFrom(iD).Dump("IDerived assignable IBase?");            //=> True
+{% endhighlight %}
 
+The classes behave as expected (6 is 2 methods + 4 from @Object@), but I expected @FlattenHierarchy@ with @IDerived@ to return two methods: its own @DerivedMethod@ and its parent @BaseMethod@.  Probing further, shows that not only classes are not subclasses of the interfaces they implement, but neither are interfaces subclasses of their parents.
 
+Much sooner that I did, Rory asked the question at the core of this post: 
 
+bq.. Does interface inheritance exist?
 
-
-
+Much to my amazement, the answer is no, at least according to reflection. This is completely not what I had assumed.
 
 <a name="when_in_doubt"> </a>
 
@@ -146,7 +254,7 @@ What did we learn?
 
 In truth, there's no true inheritance in the CLI when it comes to interfaces - that is reserved for classes; in practice, we can consider interface inheritance exists as long as we use those relationships for typing rather than reflection.
 
-If you perform runtime type inspection with a goal to see if casting is possible, use @Type#IsAssignableFrom@, rather than @Type#IsSubclassOf@. I cannot think of a good case where you'd explicitly want @IsSubclassOf@ and that would not betray your abstractions, but it's late and I cannot think well during normal hours, let alone late into the night.
+If you perform runtime type inspection with a goal to see if casting is possible, use @Type.IsAssignableFrom@, rather than @Type.IsSubclassOf@. I cannot think of a good case where you'd explicitly want @IsSubclassOf@ and that would not betray your abstractions, but it's late and I cannot think well during normal hours, let alone late into the night.
 
 When you need to build a list of members an interface exposes that needs to include its parents, you have to perform recursive inspection using @GetInterfaces()@ and then query those in turn for members. 
 
