@@ -1,0 +1,158 @@
+---
+title: instances are not classes 
+snippet: A brief look at .Net instance and class inheritance through the lens of DataBinding.
+layout: post
+has_tldr: yes
+---
+
+
+Well, duh! Right?
+
+To be honest, if you know that then this post does not have much to offer, 
+except a tale of @DataBinding@ exceptions, @TypeConverters@, a few interesting tid-bits I picked up along the way,
+along with what I think it's a bug in a core .Net class.
+
+
+* "data binding and interfaces":#databinding_and_interfaces
+* "the devil is in the code":#devil
+* "when in doubt":#when_in_doubt
+* "conclusion":#tldr
+
+Throughout this post I will use two interface and two classes implementing them to make my point:
+
+{% highlight csharp %}
+interface IBase {
+	string BaseMethod();
+}
+interface IDerived : IBase {
+	string DerivedMethod();
+}
+
+class Base: IBase {
+	public string BaseMethod() { return "BaseMethod"; }
+}
+class Derived : Base, IDerived {
+	public string DerivedMethod() { return "DerivedMethod"; }
+}
+{% endhighlight %}
+
+Rocket surgery, innit?
+
+<a name="databinding_and_interfaces"> </a>
+
+h2. data binding and interfaces
+
+Even before Uncle Bob articulated the "SOLID principles":http://blog.objectmentor.com/articles/2009/02/12/getting-a-solid-start, and I like to believe that even before the advent of the "Dependency Inversion principle":http://en.wikipedia.org/wiki/Dependency_inversion_principle, good OOP developers have designed and programmed against abstractions, e.g., *interfaces*.
+
+It only makes sense that we apply the DIP to "MVVM (Model View ViewModel)":http://en.wikipedia.org/wiki/MVVM, as it shows in this overly simplistic example:
+
+{%highlight csharp %)
+class MyForm : Form {
+	public IBase Base { get; set; }
+	public IDerived Derived { get ; set; }
+	protected override void OnLoad(EventArgs e) {
+		this.Text += ":" + (Base == null ? "Base is null" : Base.BaseMethod());
+		this.Text += ":" + (Derived == null ? "Derived is null" : Derived.DerivedMethod());
+	}
+}
+class MyViewModel  {
+	public IBase Base { get { return new Base(); } }
+	public IDerived Derived { get { return new Derived(); } }
+}
+{% endhighlight %}
+
+MVVM was designed to make use of binding of properties, @DataBinding@ to be more specific:
+
+{% highsight csharp %}
+void Main()
+{
+	MyForm viewBase = new MyForm { Text = "Base" }, viewDerived = new MyForm { Text = "Derived" };
+	var viewModel = new MyViewModel();
+
+	viewBase.DataBindings.Add("Base", viewModel, "Base", false, DataSourceUpdateMode.OnPropertyChanged);
+	viewDerived.DataBindings.Add("Derived", viewModel, "Derived", false, DataSourceUpdateMode.OnPropertyChanged);
+
+	viewBase.Show();
+	viewDerived.Show();
+}
+{% endhighlight %}
+
+Running that code ("here are the script":/media/files/databinding.linq to use with "LINQPad":http://www.linqpad.net/) you'd expect to get two windows with titles "Base:BaseMethod" and respectively "Derived:DerivedMethod", instead you get two big, fat, @FormatExceptions@ which make as much sense as a fish with a bicycle:
+
+pre. System.FormatException: Cannot format the value to the desired type.
+   at System.Windows.Forms.Binding.FormatObject(Object value)
+   ...
+   at System.Windows.Forms.Control.UpdateBindings()
+   ...
+   at System.Windows.Forms.Control.CreateControl()
+   at System.Windows.Forms.Control.WmShowWindow(Message& m)
+   at System.Windows.Forms.Control.WndProc(Message& m)
+   at System.Windows.Forms.ScrollableControl.WndProc(Message& m)
+   at System.Windows.Forms.Form.WmShowWindow(Message& m)
+   at System.Windows.Forms.Form.WndProc(Message& m)
+   at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message& m)
+   at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
+   at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+
+(Full stack trace "here":https://gist.github.com/1283578#file_gistfile1.txt)
+
+Cannot _format_?! And format what - a @Base@ into an @IBase@? How is that possible?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a name="when_in_doubt"> </a>
+
+h2. when in doubt
+
+... look up the specs.
+
+In highsight, it should all have been obvious. My mistake lies in thinking of interfaces as purely virtual/abstract classes (there's some C++ roots showing - only pointing that out to get some street cred). 
+
+However, that shows fault immediately because, even if it was so - even if interfaces were purely virtual _classes_, the CLI does not support multiple *class* inheritance. The standard, "ECMA-335":ecma355, explicitly states in _8.9.9 Object type inheritance_ that:
+
+bq. [...] all object types shall either explicitly or implicitly declare support for (i.e., inherit from) exactly one other object type.
+
+
+If we were to nitpick though, we would point out that the C# standard, "ECMA-334":ecma334, is a bit inconsistent in usage: within _8.9 Interfaces_ you will read "Interfaces can employ multiple inheritance", which is contradicted by _ECMA-335 8.10 Member inheritance_:
+
+bq. While interface types can be derived from other interface types, they only “inherit” the requirement to implement method contracts, never fields or method implementations. 
+
+While C++ does support true multiple inheritance, Managed C++ doesn't. I found "this blog post":http://blogs.msdn.com/b/slippman/archive/2004/08/05/209606.aspx that shares Managed C++ team's decision and includes this grain of insight about Eiffel's support of multiple inheritance on the CLI:
+
+bq.. [...] the CLI does not, for example, support private inheritance, value inheritance (that is, the inheritance of implementation but not of type), or multiple inheritance (MI). While a language can choose to support these aspects of inheritance, that support requires a mapping onto the existing CLI object model because there is no direct support.
+
+The Eiffel language under CLI, for example, choose to provide an MI mapping [...] 
+
+
+
+
+<a name="tldr"> </a>
+
+h2. conclusion
+
+What did we learn?
+
+In truth, there's no true inheritance in the CLI when it comes to interfaces - that is reserved for classes; in practice, we can consider interface inheritance exists as long as we use those relationships for typing rather than reflection.
+
+If you perform runtime type inspection with a goal to see if casting is possible, use @Type#IsAssignableFrom@, rather than @Type#IsSubclassOf@. I cannot think of a good case where you'd explicitly want @IsSubclassOf@ and that would not betray your abstractions, but it's late and I cannot think well during normal hours, let alone late into the night.
+
+When you need to build a list of members an interface exposes that needs to include its parents, you have to perform recursive inspection using @GetInterfaces()@ and then query those in turn for members. 
+
+If @DataBinding@ throws wrenches in your spokes because the target type is an interface, either replace it with an abstract class or use a @TypeConverter@ in combination with a @TypeConverterAttribute@.
+
+
+
+[ecma355]: http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf
+[ecma344]: http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-334.pdf
