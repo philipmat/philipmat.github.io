@@ -184,13 +184,17 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 {
 	background-color: #eee;
 }
-.post .feedback {
-	margin: 40px 30px 0 30px;
+.post .feedback ,
+.post .skip-tldr
+{
 	font-size: smaller;
 	font-style: italic;
 	color: #777777;
 }
 
+.post .feedback {
+	margin: 40px 30px 0 30px;
+}
 .post .footnotes hr,
 .post hr.footnotes
 {

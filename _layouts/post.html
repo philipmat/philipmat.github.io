@@ -6,7 +6,7 @@ layout: base
 	<div class="date">{{ page.date | date: "%a, %b %d %Y" }}</div>
 	<div class="body">
 		{% if page.has_tldr %}
-		<p><i>Skip to the <b><a href="#tldr"><abbr title="Too Long; Didn't Read">TL;DR</abbr></a></b> if you have a short attention span like me.</i></p>
+		<p class="skip-tldr"><i>If you have an attention span as short as mine, feel free to <a href="#tldr">skip to the <abbr title="Too Long; Didn't Read">TL;DR</abbr></a>.</i></p>
 		{% endif %}
 		
 		{{ content }}
