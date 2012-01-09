@@ -1,5 +1,5 @@
 ---
-title: .Net DI container speed redux
+title: .Net DI Container Speed Redux
 layout: post
 has_tldr: yes
 ---
@@ -25,7 +25,7 @@ The rest of this post is broken down as following:
 
 
 <A name="noregcheck"> </A>
-## performance without registration checks
+## Performance without Registration Checks
 
 The following table displays the improvements that took place once the registration check was removed. I expected more impressive gains; I guess all containers but **Unity** have really efficient registration checks and as a result have only posted gains that hovered mostly between 1.1x to 1.3x, with a few weird numbers in between.
 
@@ -95,7 +95,7 @@ Fair enough, it's a decision I respect, and my intent is not to provide criticis
 
 
 <A name="regcheckdebate"> </A>
-## the registration check debate
+## The Registration Check Debate
 
 In the same reply that I've extracted the quote above, Mr. Tavares asked a very good question: <q>Why do you call IsRegistered at all?</q>, and expressed an opinion I share: <q>if you're using it a lot you're most likely doing DI wrong</q>.
 
@@ -112,7 +112,7 @@ I got similar comments from other people. @dot_NET_Junkie was stronger in his st
 At the end of the day, all that these containers provide is dependency resolution, how you employ them, whether pure *DI* or most likely a combination of *DI* and *SL*, it's up to you. What didn't escape me is the irony of the *Service Locator* being present even in the purest of *DI* cases: after all, how do you get that very first object, the root of your entire running hierarchy, out of the *DI* container? You ask for it, you get it, and there's a name for that: service location. Glad we've established that; [now we are just haggling about the price.](http://en.wikiquote.org/wiki/George_Bernard_Shaw#Anecdotal_dialogue).
 
 <A name="regcheckalt"> </A>
-## alternatives to registration checks
+## Alternatives to Registration Checks
 
 There's another interesting use case for a service locator, at least one in which it is considerably easier to employ it versus dependency injection: optional plugin points. What all these containers we looked at have in common is that when requesting an object that the containers cannot construct they will throw an exception: **Unity** throws a `ResolutionFailedException`, **Ninject** throws an `ActivationException`, etc. Given exceptions tend to be somewhat expensive in .Net, never mind the silliness of considering the absence of an *optional component* an exceptional case, it sounds reasonable that we'd check whether a component is registered before requesting it from the container. 
 
@@ -195,7 +195,7 @@ There's one more way - of course I left the best for last: the most elegant appr
 
 
 <A name="tldr"> </A>
-## conclusion
+## Conclusion
 
 The best use case for any of the six containers we looked at, now and [a few weeks ago][di_speed], [Autofac][autofac], [Castle.Windsor][castle], [Ninject][ninject], [Spring.Net][spring], [StructureMap][smap], and [Microsoft Unity][unity], and probably the best use case for *Dependency Injection* in general, is one where all your dependencies are satisfied. If you find yourself in this fortunate position, 4 out of the 6 containers produce results so close it's not worth giving it a second thought - go with what you have or know. Even in the **Ninject** case, if you're familiar with it, stick with it. Best you use *any* container than go without. If you're forced to use **Spring.Net**, I'm sorry; I hope you reap the benefits of the rest of the framework.
 

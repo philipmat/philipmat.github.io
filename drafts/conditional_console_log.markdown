@@ -1,5 +1,5 @@
 ---
-title: conditional console.log
+title: Conditional console.log
 layout: post
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: jekyll vs. hyde - a comparison of two static site generators
+title: Jekyll vs. Hyde - A Comparison Of Two Static Site Generators
 snippet: A comparison of Jekyll and Hyde when considering a static website generator.
 layout: post
 has_tldr: yes
@@ -29,7 +29,7 @@ To get this sample site, execute `git clone https://github.com/philipmat/jekyll_
 * [Conclusion](#tldr)
 
 <A name="installation"> </A>
-## installation
+## Installation
 The best way to install Jekyll is via RubyGems:
 {% highlight bash %}
 gem install jekyll
@@ -61,11 +61,11 @@ Since you're getting intimate with that terminal anyway, you might want to consi
 
 
 <A name="structure"> </A>
-## structure
+## Structure
 
 Both languages tend to follow a similar structure, with Jekyll favoring convention-over-configuration, whereas Hyde relies entirely on configuration. Both will read pretty much all files in the structure and either through process or straight copy will generate your static website in dedicated output folder.
 
-### jekyll
+### Jekyll
 The more prominent elements of a typical Jekyll structure include a `_layouts` folder that stores the templates to build the site, a `_posts` folder that contains the blog content, and a `_site` folder where the generated website will be placed. Also typically present are a configuration file in YAML format, `_config.yml`, a root `index.html`, and most likely some sort of `media` folder for your `.css`, `.js`, and images.
 
 	./
@@ -90,7 +90,7 @@ Within this structure, Jekyll will attempt to process all `.html`, `.markdown`, 
 
 Jekyll also mandates that the files within the `_posts` folder are in a `YEAR-MONTH-DATE-blog_title.MARKUP` format. You have control over the [permalinks][jekll_permalinks] it will generate, but the names of the files are fixed.
 
-### hyde
+### Hyde
 Hyde helpfully offers to generate a "basic website" for newcomers - which, as mentioned before, doesn't work, but gives you a basic idea of what Hyde looks like and a `settings.py` file to work with. You need to comment out a good deal of (not initially useful) lines in `settings.py` to get you started.   
 
 Hyde compartmentalizes its files a bit more than Jekyll:
@@ -102,7 +102,7 @@ Hyde compartmentalizes its files a bit more than Jekyll:
 
 
 <A name="configuration"> </A>
-## advanced configuration and options
+## Advanced Configuration and Options
 Aside from the caveat regarding Hyde's generated "basic website" and `settings.py`, neither engine requires any further configuration to start working on your website, but both offer more advanced options, and in both cases *most* of these options are configurable through `settings.py` in Hyde's case and `_config.yml` in Jekyll's.
 
 You get common features such as: 
@@ -140,13 +140,13 @@ Oh, and cherry on the cake, both have support for [Growl](http://growl.info/) - 
 
 
 <A name="templates"> </A>
-## the content and the templating language
+## The Content and the Templating Language
 
 Hyde uses the [Django templating language][django_template] while Jekyll uses the similar, but less complex/powerful, [Liquid][liquid].  
 If you're familiar with **Django**, you'll be at home with **Liquid**. If you're very familiar with Django, you'll notice pretty fast that Liquid is missing one very significant feature: **blocks**. We'll talk about this later - I just wanted to get it out of the way.
 
 
-### a simple page
+### A Simple Page
 In both cases, you will pair a content file with one or more template files.  
 __Let's start with Jekyll__ and a very simple "about" page, which will start out as an `./about.markdown` file and end up in `./_site/about.html`.
 
@@ -237,7 +237,7 @@ Notice how the `content` block of `page.html` replaces the parent's, and the `ar
 Your probably figured out that the `{{"{% hyde"}} %}` block is the rough equivalent of **YAML Front Matter** header.
 
 
-### dynamic page - the blog
+### Dynamic Page - The Blog
 To create a blog page, that is to generate a dynamic page that essentially includes other pages, Jekyll and Hyde offer similar mechanisms, but they go a different way about it. Jekyll is more opinionated and requires that your blog posts are *a)* stored within the `_posts` folder and *b)* that they follow a very specific naming convention: `YEAR-MONTH-DATE-blog_title.MARKUP`, where `MARKUP` would be either `markdown` or `textile`. If you do so, you will be able to use a construct in your templates that will iterate over the posts in reverse order by the date within the file name. For example, to output the list of the last 3 posts you would write:
 
 {% highlight html %}
@@ -287,7 +287,7 @@ Read through Hyde's [templating guide][hyde_template] to discover more about wha
 
 
 <A name="misc"> </A>
-## miscellaneous features and considerations
+## Miscellaneous Features and Considerations
 
 Both engines come with a **built-in web server** that allows you to quickly check how the generated content will look like. Jekyll's is based on WEBrick and Hyde's on CherryPy, so you will need to have the respective gem or egg installed. One of the features that makes Jekyll stand out is that it combines the server with a directory watcher which will continuously regenerate the files that have changed (run `jekyll --auto --server`), whereas for Hyde you will need to run the regen command each time you change a file by running `python /path/to/hyde.py -g`.    
 In practice, this is an incredible time saver and Jekyll processes only the files that change so it is very, very quick. To give you an idea how fast this process is, consider that I have MacVim set to save the files whenever the window loses focus; I can `Cmd-Tab` to the browser window and by the time I get to issue the refresh page command, the changed file has already been processed.
@@ -303,7 +303,7 @@ And finally, **deploying your site** to its final location is an exercise in sim
 
 <A name="tldr"> </A>
 
-## conclusion
+## Conclusion
 Jekyll is considerably easier to get up and run with, has *plenty* of examples, a strong presence in github behind it, and where it's lacking it can be extended with plugins. That Liquid is such a close implementation of the Django templating language is both a blessing and a curse: a blessing because you can look at existing Django examples, and a curse because not all those examples will work, and because you will not be able to take advantage of the large library of filters and tags available for Django.
 
 Hyde on the other hand benefits immediately from the power of the Django templating language, the considerate flexibility that comes with it, as well as most of the tags and filters available through the [Django snippets][djangosnippets] library. It takes  more effort to get it up and develop your initial wireframe, and there is not much help if you get off the beaten path, but those costs might be offset if you require the more advanced features Hyde provides, including the one possibly killer features in the [Clyde][clyde] web editor, once it's complete and stable.  

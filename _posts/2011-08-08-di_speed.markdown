@@ -1,5 +1,5 @@
 ---
-title: .Net DI container speed test
+title: .Net DI Container Speed Test
 snippet: A comparison of performance in object retrieval of six .Net Dependency Injection containers
 layout: post
 ---
@@ -18,7 +18,7 @@ I have elected to run against the latest versions of the six major containers of
 
 
 <A name="methodology"> </A>
-## methodology
+## Methodology
 
 My tests ([source code][gitdi] available on github) concern themselves almost exclusively with the speed with which objects are retrieved from the containers. Memory footprint was not even a secondary concern and, to be honest, I don't even know how to measure it with any kind of precision. The code contains [a modest attempt](https://github.com/philipmat/di_speed/blob/master/dotnet/src/Main-4/PerfCounter.cs) at memory measurements - if you believe it to be correct, there's a setting in `app.config` to print it out as you run the tests.
 
@@ -36,7 +36,7 @@ I am running this in a virtual machine that I will restart before each of the ei
 
 
 <A name="tldr"> </A>
-## results
+## Results
 
 Individual results are boring, but are presented in the next sections for your perusal, so let us take a look at pretty charts presenting the overall situation.
 
@@ -59,7 +59,7 @@ All containers are roughly on parity syntactically and feature-wise - one can ea
 Let us look at individual numbers in ugly tables next. Feel free to jump to [my take](#mytake) if this is not of interest to you.
 
 <A name="singletons"> </A>
-## retrieving singletons
+## Retrieving Singletons
 
 I believe this is the most common case in construction of **DI trees** and it's after all just an optimization of the *transient* scenario. It's suitable for classes whose context remains unchanged through the execution of the program, be they complex or not. If you rely (solely? largely?) on the constructor flavor of dependency injection, chances are everything behaves as if it was in singleton mode anyway. However, if you use a *Service Locator* approach, whether exclusively or not, the difference between singleton and transient becomes something you have to pay more attention to.
 
@@ -99,7 +99,7 @@ The results of the runs:
 The median across containers for `Resolve()`-ing the same object ten thousand times is around 20 milliseconds, with four out of six containers being close around that number. Of the two offenders, **Ninject** was 8.6 times slower than the fastest container, **Autofac**, and **Unity** close on its heels at 7x the speed. The *100k* run only served to make the gap more obvious with **Ninject** clocking in a whooping 12.5x slower. Surprisingly, the second fastest container in the *10k* run, **Spring.Net** was now the second slowest (9.4x slower).
 
 <A name="transient"> </A>
-## transient objects
+## Transient Objects
 The transient scope is most common with classes that control access to limited resources: database connection, web service requests, etc., or whose context changes on every call. Or if you just want to be safer at the expense of a bit performance. My gut feeling is that in most cases these type of classes will have either creation or use costs that outweigh the container's, but nevertheless I thought it makes for an interesting test case because it tells us how efficient each container's build plan is. I don't expect any of the containers to use [the very slow][ayendecreation] `Activator.CreateInstance`, but there are various strategies that can be employed to create new objects and calculate their dependencies, all which can use different lifestyles.
 
 As the test focuses on object creation I chose the route of an object with no dependencies, rather than the more complex but more realistic case of a class that gets injected with other dependencies, which themselves might be dynamically resolved at that point.
@@ -138,7 +138,7 @@ I expected the *100k* test to repeat the story of the *singleton* and to increas
 **Ninject** sticked to its guns and managed again to be 12x slower than the fastest container in the *10k* race - **StructureMap**, and almost 14x slower in the *100k* run. Worthy mention of suckage: **Spring.Net**, which managed slowness factors of 8.8 and 9.8 relative to **StructureMap**. 
 
 <A name="singletons_loaded"> </A>
-## retrieving singletons - loaded containers
+## Retrieving Singletons - Loaded Containers
 
 Based on what I've seen of their respective source code, each container takes different approaches to storing class registrations and as such when a resolution is performed, each container will use a different strategy to either retrieve an existing instance or create a new one (**Unity** calls them *build plans*, which I like a lot). I believe this test will attempt to show how well each container's approach scales when the container has a good deal of objects registered and created. 
  
@@ -186,7 +186,7 @@ What the!? What just happened? Are those **Unity** numbers real? **258.5** and r
 Unfortunately it is true. I was so stupefied by the result that I had to try two different approaches on three different machines. They all posted similar numbers.
 
 <A name="transient_loaded"> </A>
-## transient objects - loaded containers
+## Transient Objects - Loaded Containers
 
 You can probably anticipate how quickly I moved on to the next test. **Unity** has put an okay fight in the *transient* test, recording numbers on par with the other two usually fast containers: **Autofac** and **Windsor**.
 
@@ -210,7 +210,7 @@ I'm not going to dwell on those numbers. I don't know how to explain them. I'll 
 
 
 <A name="mytake"> </A>
-## my take
+## My Take
 
 From seeing these numbers, working with the containers (not just for the purpose of this test), and being somewhat aware of what tells them apart: my favorite is **[Autofac][autofac]**, which is small, incredibly powerful, and yet very elegant to use. In stark contrast to **Spring.Net**, I think I spent the least amount of time trying to figure out how to use **Autofac** - mostly everything seemed obvious. Even the more advanced features, some of which the other containers are either barely now getting them or still dreaming of them, are very straightforward and easy to pick up.
 

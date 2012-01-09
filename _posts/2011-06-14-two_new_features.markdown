@@ -1,5 +1,5 @@
 ---
-title: two significant new features in Lion
+title: Two Significant New Features In Lion
 layout: post
 ---
 
@@ -8,7 +8,7 @@ A great deal of smart people blogged and [spoke on podcasts](http://5by5.tv/) ab
 But there are two features that albeit not life-saving improve the quality of life quite considerably and
 have been at the forefront of Mac <strike>critique</strike> switcher pain since... well, OS X.
 
-## #1: resize from any edge
+## #1: Resize from Any Edge
 
 Instead of just from the bottom right corner, you can now [resize from any edge][other] and any corner too:   
 ![Resize from any edge](/media/images/resize_lion.png)
@@ -20,7 +20,7 @@ found their purpose: to display content, not widgets.
 I don't need to say more about this one. As an owner of a large LCD that  
 displays multiple windows at the same time, thank you! Thank you so *unpossibly* very much.
 
-## #2: merge folder content
+## #2: Merge Folder Content
 
 When you copy or move a folder and the target already contains a folder 
 with the same name, the Finder gives you the option
@@ -51,7 +51,7 @@ Perhaps it's just a matter of perspective and whether one sees "the thing" as be
 rather than folder itself. 
 
 
-## why wait so long?
+## Why Wait So Long?
 
 This is **the one question** that's been nagging me regarding these two changes, but I think I'll let smarter people answer.
 
@@ -70,7 +70,7 @@ a seemingly core visual feature that people identified with OS X (and complained
 
 One more for the road:
 
-## 256 terminal colors
+## 256 Terminal Colors
 
 If anything, a [256-color terminal][unix] means **vim** can look as good in the console as **MacVim** 
 looks.    

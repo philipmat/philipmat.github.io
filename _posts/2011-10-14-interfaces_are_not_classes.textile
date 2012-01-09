@@ -1,5 +1,5 @@
 ---
-title: .Net interfaces are not classes 
+title: .Net Interfaces Are Not Classes 
 snippet: A brief look at .Net instance and class inheritance through the lens of DataBinding.
 layout: post
 has_tldr: yes

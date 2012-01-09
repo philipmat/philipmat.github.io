@@ -1,5 +1,5 @@
 ---
-title: my productive recipe
+title: My Productive Recipe
 layout: post
 ---
 
@@ -32,6 +32,8 @@ Hemingway
 > nothing means anything until the next day when you do it again. 
 > It is the wait until the next day that is hard to get through.
 
+
+
 > INTERVIEWER
 > 
 > But are there times when the inspiration isn’t there at all?
@@ -42,6 +44,16 @@ Hemingway
 
 > You can write any time people will leave you alone and not interrupt you. Or rather you can if you will be ruthless enough about it. But the best writing is certainly when you are in love.
 
+
+Seinfeld
+> He said for each day that I do my task of writing, I get to put a big red X over that day. 
+> "After a few days you'll have a chain. Just keep at it and the chain will grow longer every day. 
+> You'll like seeing that chain, especially when you get a few weeks under your belt. 
+> Your only job next is to not break the chain."
+> 
+> "Don't break the chain," he said again for emphasis.
+
 [hemingway]: http://www.theparisreview.org/interviews/4825/the-art-of-fiction-no-21-ernest-hemingway
 [strucproc]: http://www.structuredprocrastination.com/
+[seinfeld]: http://lifehacker.com/281626/jerry-seinfelds-productivity-secret
 

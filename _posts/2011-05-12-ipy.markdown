@@ -1,5 +1,5 @@
 ---
-title: ipy - completion for python interactive
+title: ipy - Completion For Python Interactive
 snippet: Enabling completion for Python in interactive mode.
 layout: post
 ---

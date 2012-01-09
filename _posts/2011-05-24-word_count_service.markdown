@@ -1,5 +1,5 @@
 ---
-title: word count service for os x
+title: Word Count Service For OS X
 layout: post
 ---
 

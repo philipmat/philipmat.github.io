@@ -1,5 +1,5 @@
 ---
-title: quickly move messages in Mail.app
+title: Quickly Move Messages In Mail.app
 layout: post
 ---
 

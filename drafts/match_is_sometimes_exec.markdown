@@ -1,5 +1,5 @@
 ---
-title: match is sometimes exec
+title: Match Is Sometimes Exec
 layout: post
 has_tldr: yes
 ---
@@ -55,7 +55,7 @@ Turns out that this behavior is required by the stardard. To translate in slight
 
 <A name="tldr"> </A>
 
-## conclusion
+## Conclusion
 
 When called *without* the `/g` option, [`string.match`][match] behaves exactly like [`RegExp.exec`][exec]: it returns one (the first) descriptive match at the time and relies on you calling it multiple times to retrieve more matches. 
 
