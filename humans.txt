@@ -12,7 +12,8 @@
 	URL: http://www.tumblr.com/theme/11084
 
 /* SITE */
-	Last update: 2011/06/15
+	Last update: 2012/01/21
+
 	Language: English
 	Doctype: XHTML
 	Software: MacVim, jekyll
