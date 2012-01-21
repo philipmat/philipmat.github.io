@@ -3,7 +3,7 @@ title: Projects of My Own
 layout: page
 ---
 
-Here are some projects I worked on:
+Here are some (public) projects I worked on:
 
 ### In the lab (alpha stage)
 
@@ -15,6 +15,7 @@ Here are some projects I worked on:
 
 ### Fully grown (released)
  
+* [discogs-xml2db](http://github.com/philipmat/discogs-xml2db)
 
 ### Long dead (or zombified) but still proud of
 
