@@ -1,5 +1,5 @@
 ---
-title: Templates for GoodNotes (and others)
+title: Templates for GoodNotes
 snippet: Templates for GoodNotes and other notes applications
 layout: post
 has_tldr: true
@@ -31,6 +31,10 @@ but it also supports importing new templates.
 
 After a few weeks of giving up paper and exclusively using the app,
 I've created a few templates for the type of notes I find myself taking most frequently.
+
+While these templates have been build with GoodNotes in mind, you can 
+[take the SVG files](#tech_notes) and with very few tweaks target them towards other 
+note taking apps.
 
 Read on for an explanation of the design and thoughts that went into 
 each template, how to import them into GoodNotes, and how you can 
@@ -189,6 +193,8 @@ of the time it took to create the SVGs.
 However, since the SVG files are text they are effectively the *source code*
 for the templates, something I can certainly appreciate as a software engineer.
 
+As a bonus, you need but a text editor to quickly change their dimensions 
+and create templates for another note taking app (e.g. Penultimate).
 
 <a name="tldr"> </a>
 
