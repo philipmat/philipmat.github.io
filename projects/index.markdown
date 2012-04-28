@@ -16,6 +16,8 @@ Here are some (public) projects I worked on:
 ### Fully grown (released)
  
 * [discogs-xml2db](http://github.com/philipmat/discogs-xml2db)
+* [ShortStatus][https://github.com/philipmat/ShortStatus]
+* [Templates for GoodNotes][https://github.com/philipmat/TemplatesForGoodNotes]
 
 ### Long dead (or zombified) but still proud of
 

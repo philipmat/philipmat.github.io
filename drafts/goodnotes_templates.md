@@ -6,12 +6,12 @@ has_tldr: true
 ---
 
 Recently I've been testing a few apps for taking notes
-and I have settled on [GoodNotes][gn].
+and I have settled on [GoodNotes][gn].  
+It's a really good looking app and the developers are dedicated to it. 
+How dedicated? They had a retina version out within days after the iPad 3 release.
 
 <!--
 
-It's a really good looking app and the developers are dedicated to it. 
-How dedicated? They had a retina version out within days after the iPad 3 release.
 
 This is a point worth accounting for because it's almost two months later 
 and *Penultimate*, probably the best known notes app,
@@ -29,8 +29,8 @@ but it also supports importing new templates.
 
 -->
 
-After a few weeks of exclusive use of the app I've created a few templates 
-for the type of notes I find myself taking most frequently.
+After a few weeks of giving up paper and exclusively using the app,
+I've created a few templates for the type of notes I find myself taking most frequently.
 
 Read on for an explanation of the design and thoughts that went into 
 each template, how to import them into GoodNotes, and how you can 
