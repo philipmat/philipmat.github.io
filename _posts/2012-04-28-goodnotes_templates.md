@@ -195,7 +195,8 @@ for the templates, something I can certainly appreciate as a software engineer.
 ## Where to Get Them
 
 The templates [are on github][ght] and the SVG files are within the *source* 
-folder of that repository.
+folder of that repository. If you're interested only in the PNG files, I've 
+uploaded a zip file that [contains them all](https://github.com/philipmat/TemplatesForGoodNotes/downloads).
 
 The templates, both PNG and SVG files, are released under a [Creative Commons BY-NC-SA][cc] license, 
 which means you are free to share them and change (remix) them, but you cannot sell them,
