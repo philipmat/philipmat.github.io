@@ -1,13 +1,13 @@
 html { font-size: 14px; }
 body { 
 	background: #fcfcfc;
-	font: normal 1em/1.5 "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, sans-serif;
+	font: normal 14px/1.5 "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
 	margin: 0; padding: 0; 
 }
 
 :focus { outline: 0; }
 a, a:active, a:visited {
-	color: #aa2200;
+	color: #586e75;
 	text-decoration: none;
 }
 a:hover {
@@ -20,9 +20,9 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: "Gill Sans MT Pro", "Gill Sans MT", "Gill Sans", "Trebuchet MS", sans-serif; 
 	font-weight: normal; 
 }
-h1 { font-size: 2em; line-height: 1.5; }
-h2 { font-size: 1.75em; line-height: 1; }
-h3 { font-size: 1.4em; line-height: 1.07; }
+h1 { /*font-size: 200%;*/ line-height: 1.5; }
+h2 { /*font-size: 175%;*/ line-height: 1; }
+h3 { /*font-size: 140%;*/ line-height: 1.07; }
 
 ul, ol { list-style-position: outside; margin: 0 0 1.5em; padding: 0}
 ol { padding-left: 1.5em}
@@ -114,7 +114,7 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 #content h4,
 #content h5,
 #content h6 {
-	text-shadow: #777777 1px 1px 1px;
+	/*text-shadow: #777777 1px 1px 1px;*/
 }
 
 /* static page*/
@@ -226,21 +226,46 @@ abbr, acronym { border-bottom: 1px dotted #777777; cursor: pointer; }
 	line-height: 100%;
 }
 pre {
-	background-color:#eee;
-	border:1px solid #ddd;
+	background-color:#f2f2f2;
+	/*border:1px solid #ddd;*/
 	padding:5px;
 	line-height:1.2em;
 	color:#444;
 	font-family: 'Menlo Regular', 'Bitstream Vera Sans Mono', 'Andale Mono', Consolas, monospace;
 	font-size: 12px;
 	overflow:auto;
+	/*
 	-webkit-box-shadow:rgba(0,0,0,0.07) 0 1px 2px inset;
 	-webkit-border-radius:3px;
 	-moz-border-radius:3px;
 	border-radius:3px;
+	*/
 }
 pre::-webkit-scrollbar {height:8px;width:8px;}
 pre::-webkit-scrollbar-track-piece {margin-bottom:10px;background-color:#e5e5e5;border-bottom-left-radius:4px 4px;border-bottom-right-radius:4px 4px;border-top-left-radius:4px 4px;border-top-right-radius:4px 4px;}
 pre::-webkit-scrollbar-thumb:vertical {height:25px;background-color:#ccc;-webkit-border-radius:4px;-webkit-box-shadow:0 1px 1px rgba(255,255,255,1);}
 pre::-webkit-scrollbar-thumb:horizontal {width:25px;background-color:#ccc;-webkit-border-radius:4px;}
 
+@media all and (max-width:680px) {
+	#content {
+		width: 100%;
+		margin: 60px 8px 0 8px;
+	}
+	#sidebar { display: none }
+	h1 { line-height: 1 }
+	.post .date { 
+		float: none;
+		width: 100%;
+		margin-left: 0;
+		padding: 0;
+	}
+	.post .date:before {
+		content: 'posted on '
+	}
+	#title H1 {
+		margin-left: 8px;
+	}
+	#title UL {
+		left: 168px;
+	}
+}
