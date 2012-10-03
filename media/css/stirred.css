@@ -259,8 +259,17 @@ pre::-webkit-scrollbar-thumb:horizontal {width:25px;background-color:#ccc;-webki
 		margin-left: 0;
 		padding: 0;
 	}
+	.post .date {
+		font-size: 75%;
+	}
 	.post .date:before {
 		content: 'posted on '
+	}
+	.post .body p {
+		font-size: 14px;
+	}
+	pre {
+		font-size: 14px;
 	}
 	#title H1 {
 		margin-left: 8px;
@@ -268,4 +277,8 @@ pre::-webkit-scrollbar-thumb:horizontal {width:25px;background-color:#ccc;-webki
 	#title UL {
 		left: 168px;
 	}
+
+	h1 { font-size: 30px; }
+	h2 { font-size: 26px; }
+	h3 { font-size: 22px; }
 }
