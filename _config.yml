@@ -4,4 +4,6 @@ exclude:
  - ./_drafts
  - README
  - Rakefile
-permalink: /:year/:month:day
+# permalink: /:year/:month:day
+permalink: /:year/:title.html
+
