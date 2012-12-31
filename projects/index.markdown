@@ -18,7 +18,7 @@ Here are some (public) projects I worked on:
 
 ### Fully grown (released)
  
-* [PermissiveCSRF](https://github.com/philipmat/permissivecsrf) a Django plugin for less strict CSRF checking when posting to HTTPS from an HTTP page
+* [PermissiveCSRF](https://github.com/philipmat/django-permissivecsrf) a Django plugin for less strict CSRF checking when posting to HTTPS from an HTTP page
 * [Templates for GoodNotes](https://github.com/philipmat/TemplatesForGoodNotes)
 * [ShortStatus](https://github.com/philipmat/ShortStatus) is a Twitter like plaform for teams
 * [discogs-xml2db](http://github.com/philipmat/discogs-xml2db) is used to transform and import Discogs monthly dumps into various databases
