@@ -1,0 +1,16 @@
+---
+title: Not found
+layout: base
+---
+<h1>Sorry!</h1>
+<h2>It's all my fault. I probably did something wrong. Again.</h2>
+<p>I promise I'll fix it, meanwhile here are all my posts. I hope you'll find what you were looking for.</p>
+<div class="archive">
+	{% for post in site.posts %}
+	{% include arc_post.html %}
+	{% assign last_date = post.date %}
+{% endfor %}
+</div>
+
+
+{% include copyright.html %}
