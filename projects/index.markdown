@@ -9,7 +9,7 @@ Here are some (public) projects I worked on:
 
 * [Random Answers](https://github.com/philipmat/RandomAnswers) is an iOS app to generate random choices and answers from really simple to complex sequences
 * [Autofac.QuartIntegration](https://github.com/philipmat/Autofac.QuartzIntegration) attempts to bring Autofac into the world of Quart.Net
-* [Highlighter](highlighter.html)
+* [Highlighter](highlighter.html) is a Safari extension for highlighting text on pages
 
 ### In the wild (beta stage)
 
@@ -18,6 +18,7 @@ Here are some (public) projects I worked on:
 
 ### Fully grown (released)
  
+* [PermissiveCSRF](https://github.com/philipmat/permissivecsrf) a Django plugin for less strict CSRF checking when posting to HTTPS from an HTTP page
 * [Templates for GoodNotes](https://github.com/philipmat/TemplatesForGoodNotes)
 * [ShortStatus](https://github.com/philipmat/ShortStatus) is a Twitter like plaform for teams
 * [discogs-xml2db](http://github.com/philipmat/discogs-xml2db) is used to transform and import Discogs monthly dumps into various databases
