@@ -45,16 +45,17 @@ Enjoy.
 The gist of why this happens is explained in point #4 of the [How it works][csrf-how] section of the Django documentation on
 Cross Site Request Forgery (emphasis mine):
 
-> 4. In addition, for HTTPS requests, strict referer checking is done by CsrfViewMiddleware. 
+> 4) In addition, for HTTPS requests, strict referer checking is done by CsrfViewMiddleware. 
 > This is necessary to address a Man-In-The-Middle attack that is possible under HTTPS 
 > when using a session independent nonce, due to the fact that HTTP 'Set-Cookie' headers 
 > are (unfortunately) accepted by clients that are talking to a site under HTTPS. 
 > **(Referer checking is not done for HTTP requests because the presence of the Referer header is not reliable enough under HTTP.)**
 
+
 In other words, because the HTTPS headers are encrypted, the *HTTP-Referer* header is resilient 
-against MITM attacks, so it can be safely used to check and make sure the CSRF cookie or fields
-is originated by the same site that served the page and that the referring page has also been 
-served over HTTPS which means that page has also been protected against header injections.
+against MITM attacks, so it can be safely used to check and make sure the CSRF cookie
+is originated by the same site that served the page *and* that the referring page has also been 
+served over HTTPS, which means that page has also been protected against header injections.
 
 The same check could be made on HTTP calls as well, but since HTTP headers are not encrypted, they 
 could be easily faked and thus the check would be a useless placebo.
@@ -94,11 +95,11 @@ In all other cases it defers to Django for normal processing.
 
 ### Bottom line
 
-There's only one thing to take away from all this: **in production use HTTPS (see `django-sslify`_). Period.**
+There's only one thing to take away from all this: **in production use HTTPS (see [django-sslify][sslify])**. Period.
 
 
 [gh]: https://github.com/philipmat/django-permissivecsrf
-[pypi]: https://github.com/philipmat/django-permissivecsrf
+[pypi]: http://pypi.python.org/pypi/django-permissivecsrf/
 [sslify]: https://github.com/rdegges/django-sslify
 [csrf-how]: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#how-it-works
 [f9]: https://github.com/django/django/commit/f92a21daa7
