@@ -15,7 +15,7 @@ I bet you're here because you've run into the puzzling Django error
 I'll double down that this happens when you try to make your login form post to HTTPS, 
 perhaps to `https://<domain>/accounts/login/`.
 
-If I'm mostly right, you've run into a problem I've solved. If I'm not right and 
+If I'm mostly right, you've run into the problem I've solved. If I'm not right and 
 you somehow ended up on this page, I'd love [to hear about it](/contact.html).
 
 
@@ -27,8 +27,12 @@ from the same site (same origin check).
 If any portion of your site benefits from HTTPS, you probably should run your entire site over HTTPS. 
 You can use [django-sslify][sslify] to force your website to operate in HTTPS mode all the time.
 
-However, if you insist on trading some security for not really that much convenience, you can use 
-[django-permissivecsrf][gh] to work around this error.
+Furthermore, if you want to disable CSRF checking for your own views, there are [other methods 
+you can use][edge-cases], for example the `@csrf_exempt` decorator. 
+
+However, if the views are not under your control and you are comfortable n trading some security 
+for not really that much convenience, you can use [django-permissivecsrf][gh] 
+to work around this error.
 
 Use the instructions in the README file on [GitHub][gh] or on [PyPI][pypi] to get this project up an running.
 Mostly it consists of installing django-permissivecsrf and adding `'permissivecsrf.middleware.PermissiveCSRFMiddleware'`
@@ -49,7 +53,8 @@ Cross Site Request Forgery (emphasis mine):
 
 In other words, because the HTTPS headers are encrypted, the *HTTP-Referer* header is resilient 
 against MITM attacks, so it can be safely used to check and make sure the CSRF cookie or fields
-is originated by the same site that served the page.
+is originated by the same site that served the page and that the referring page has also been 
+served over HTTPS which means that page has also been protected against header injections.
 
 The same check could be made on HTTP calls as well, but since HTTP headers are not encrypted, they 
 could be easily faked and thus the check would be a useless placebo.
@@ -62,7 +67,8 @@ on the django-developers maillist.
 
 The [Django CSRF middleware][csrf-py] performs an extra-check if the request is over HTTPS to 
 ensure that the request came from the same site, i.e. that 
-the referrer (HTTP-Referer header) matches the current site.
+the referrer (HTTP-Referer header) matches the current site, 
+and that the schema of the referrer is also HTTPS.
 
 In other words, in ensures that the call to https://example.com/account/login
 came from another page of https://example.com/. As such, if you put your login 
@@ -73,8 +79,8 @@ Django's check will fail because::
     'http://example.com/' != ('https://%s/' % request.get_host())
 
 However, Django will not perform the CSRF check *at all* if the `request` object has 
-an attribute `_dont_enforce_csrf_checks` set to True. That's what PermissiveCSRF relies on:
-if the request came from the same site over HTTP it sets `_dont_enforce_csrf_checks`
+an attribute `_dont_enforce_csrf_checks` set to **True**. That's what PermissiveCSRF relies on:
+if the request came from the same site, regardless the schema, it sets `_dont_enforce_csrf_checks`
 to True, thus telling the Django CSRF middleware to skip the CSRF check for that request.
 
 This only happens if:
@@ -98,3 +104,4 @@ There's only one thing to take away from all this: **in production use HTTPS (se
 [f9]: https://github.com/django/django/commit/f92a21daa7
 [reply]: https://groups.google.com/d/msg/django-developers/IgWK2vEePtY/R1r3Im4x3UMJ
 [csrf-py]: https://github.com/django/django/blob/master/django/middleware/csrf.py
+[edge-cases]: https://docs.djangoproject.com/en/dev/ref/contrib/csrf/#edge-cases
