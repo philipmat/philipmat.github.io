@@ -67,8 +67,8 @@ task :publish do
 	# TODO: update the header in the file
 end
 
-desc 'DreamHost tasks'
-namespace :dh do
+desc 'PhilipM.at tasks'
+namespace :pmat do
 	@params = %w[-avze ssh --delete _site/ --include='.htaccess']
 	@dh = "philipm.at:~/philipm.at/"
 	desc 'Tests the philipm.at upload'
