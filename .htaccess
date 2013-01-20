@@ -1,20 +1,20 @@
 ErrorDocument 404 /404.html
 
-Redirect 301 /2012/0930/? /2012/miniature_minifier_makefile.html
-Redirect 301 /2012/0911/? /2012/kendo_select_editor.html
-Redirect 301 /2012/0428/? /2012/goodnotes_templates.html
-Redirect 301 /2012/0322/? /2012/asymmetric_sparkbars.html
-Redirect 301 /2012/0227/? /2012/json_net_nhibernate.html
-Redirect 301 /2012/0220/? /2012/json_entity_serializer.html
-Redirect 301 /2012/0214/? /2012/setting_up_fxcop_under_ccnet.html
-Redirect 301 /2012/0121/? /2012/new_webapp_architecture.html
-Redirect 301 /2011/1014/? /2011/interfaces_are_not_classes.html
-Redirect 301 /2011/0901/? /2011/indent_json.html
-Redirect 301 /2011/0819/? /2011/di_speed_redux.html
-Redirect 301 /2011/0808/? /2011/di_speed.html
-Redirect 301 /2011/0716/? /2011/mail_quickly_file.html
-Redirect 301 /2011/0614/? /2011/two_new_features.html
-Redirect 301 /2011/0524/? /2011/word_count_service.html
-Redirect 301 /2011/0512/? /2011/ipy.html
-Redirect 301 /2011/0507/? /2011/jekyll_vs_hyde.html
+RedirectMatch 301 /2012/0930(/)? /2012/miniature_minifier_makefile.html
+RedirectMatch 301 /2012/0911(/)? /2012/kendo_select_editor.html
+RedirectMatch 301 /2012/0428(/)? /2012/goodnotes_templates.html
+RedirectMatch 301 /2012/0322(/)? /2012/asymmetric_sparkbars.html
+RedirectMatch 301 /2012/0227(/)? /2012/json_net_nhibernate.html
+RedirectMatch 301 /2012/0220(/)? /2012/json_entity_serializer.html
+RedirectMatch 301 /2012/0214(/)? /2012/setting_up_fxcop_under_ccnet.html
+RedirectMatch 301 /2012/0121(/)? /2012/new_webapp_architecture.html
+RedirectMatch 301 /2011/1014(/)? /2011/interfaces_are_not_classes.html
+RedirectMatch 301 /2011/0901(/)? /2011/indent_json.html
+RedirectMatch 301 /2011/0819(/)? /2011/di_speed_redux.html
+RedirectMatch 301 /2011/0808(/)? /2011/di_speed.html
+RedirectMatch 301 /2011/0716(/)? /2011/mail_quickly_file.html
+RedirectMatch 301 /2011/0614(/)? /2011/two_new_features.html
+RedirectMatch 301 /2011/0524(/)? /2011/word_count_service.html
+RedirectMatch 301 /2011/0512(/)? /2011/ipy.html
+RedirectMatch 301 /2011/0507(/)? /2011/jekyll_vs_hyde.html
 
