@@ -1,12 +1,14 @@
 ---
 layout: base
 ---
+<section id="posts">
 {% for post in site.posts limit:5 %}
 {% include post.html %}
 {% endfor %}
+</section>
 
 
-<div id="bottom"></div>
+<section id="archive-link">
 {% include blog_archive_footer.html %}
+</section>
 
-{% include copyright.html %}

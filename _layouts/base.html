@@ -26,10 +26,15 @@
 		<link rel="author" href="/humans.txt" />
 	</head>
 	<body>
-		{% include title.html %}
+		<header id="title">{% include title.html %}</header>
+		<aside id="sidebar">
 		{% include sidebar.html %}
-		<div id="content">
+		</aside>
+		<section id="content" role="content">
 		{{ content }}
-		</div>
+		</section>
+		<footer>
+		{% include copyright.html %}
+		</footer>
 	</body>
 </html>
