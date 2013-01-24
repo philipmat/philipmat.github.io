@@ -15,5 +15,5 @@
 	Last update: 2012/01/21
 
 	Language: English
-	Doctype: XHTML
+	Doctype: HTML5
 	Software: MacVim, jekyll
