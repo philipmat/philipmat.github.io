@@ -3,7 +3,7 @@ layout: base
 ---
 <article>
 	<h1 class="title">{{ page.title }}</h1>
-	<div class="date">{{ page.date | date: "%a, %b %d %Y" }}</div>
+	<div class="date"><time pubdate datetime="{{ site.time | date_to_xmlschema }}">{{ post.date | date: "%a, %b %d %Y" }}</time></div>
 	<div class="body">
 		{% if page.has_tldr %}
 		<p class="skip-tldr"><i>If you have an attention span as short as mine, feel free to <a href="#tldr">skip to the <abbr title="Too Long; Didn't Read">TL;DR</abbr></a>.</i></p>
@@ -12,9 +12,9 @@ layout: base
 		{{ content }}
 	</div>
 
-	<div class="feedback">
+	<footer class="feedback">
 		So? Liked it? Hated it? Thought it was stupid? Thought <strong>I</strong> was stupid? Deemed it to be informative? Want to lavish excessive praise or cast fiery insults?  <a href="/contact.html">Contact me</a> and have at it.
-	</div>
+	</footer>
 
 </article>
 
