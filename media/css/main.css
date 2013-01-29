@@ -17,9 +17,9 @@ a:hover {
 	height: 20px;
 	margin: 0;
 	padding: 0;
-	background-color: #000000;
+	background-color: #444;
 }
-#title H1 {
+#title h1 {
 	float: left;
 	margin: 20px 0 0 80px;
 	-webkit-border-bottom-left-radius: 8px; -webkit-border-bottom-right-radius: 8px;
@@ -28,15 +28,15 @@ a:hover {
 
 	padding: 0 30px 6px 30px;
 	color: #fcfcfc;
-	background-color: #000000;
+	background-color: #444;
 	font-size: 150%;
 	font-weight: bold;
 	text-align: center;
 	width: 100px;
 }
-#title H1 A { color: #fcfcfc; }
-#title UL A { color: #000000; }
-#title UL {
+#title h1 a { color: #fcfcfc; }
+#title ul a { color: #444; }
+#title ul {
 	position: absolute;
 	left: 240px;
 	font-weight: bold;
@@ -53,15 +53,50 @@ a:hover {
 	padding: 0.5em;
 }
 
+
 #content {
-	width: 600px;
-	margin: 60px 0 60px 80px;
+	margin-top: 40px;
+}
+
+article h1, article h2, article h3, article h4, article h5, article h6,
+article p, article blockquote {
+	max-width: 550px;
+	padding-right: 100px;
 }
 
 article h1 {
 	font-size: 2em;
 }
 
+article.post {
+	display: block;
+	position: relative;
+	padding-left: 80px;
+	padding-top: 10px;
+	padding-bottom: 40px;
+	min-height: 130px;
+	/* overflow-x: hidden; */
+}
+
+pre code {
+	border: none;
+	display: block;
+	border: 1px solid #d2d2d2;
+	background-color: #f2f2f2;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 80px;
+	margin-left: -80px;
+	margin-right: 0;
+	width: auto;
+	border-left: none;
+	border-right: none;
+	line-height:1.2em;
+	color:#444;
+	font-family: 'Menlo Regular', 'Bitstream Vera Sans Mono', 'Andale Mono', Consolas, monospace;
+	font-size: 13px;
+	overflow:auto;
+}
 
 #copyright {
 	color: #777777;
@@ -69,4 +104,97 @@ article h1 {
 	margin-top: 40px;
 	border-top: 1px solid #777777;
 	padding: 8px 80px;
+}
+
+@media screen and (max-device-width:680px)
+{
+	body { 
+		background: #fcfcfc;
+		font: normal 12px/1.2 "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+		-webkit-text-size-adjust: none;	/* this is important otherwise Safari will attempt to increase the font size in landscape */
+		margin: 0; padding: 0; 
+	}
+
+	h1 { line-height: 1 }
+
+	#title h1 {
+		padding: 0 8px 6px 8px;
+		font-size: 16px;
+		margin-left: 8px;
+	}
+	#title UL {
+		left: 124px;
+		font-size: 10px;
+	}
+
+	#content {
+		max-width: 100%;
+		margin-top: 20px;
+		padding: 0;
+	}
+
+	#sidebar { display: none }
+
+	article h1, article h2, article h3, article h4, article h5, article h6,
+	article p, article blockquote {
+		max-width: 100%;
+		padding-right: 8px;
+	}
+	article.post {
+		padding: 0 0 0 8px;
+	}
+
+	.title { margin-bottom: 4px }
+	pre code {
+		font-size: 10px;
+		padding-left: 8px;
+		margin-left: -8px;
+	}
+
+	.post .date { 
+		float: none;
+		width: 100%;
+		margin-left: 0;
+		padding: 0;
+		font-size: 75%;
+		color: #444;
+	}
+	.post .date:before {
+		content: 'posted on '
+	}
+
+	h1 { font-size: 18px; }
+	h2 { font-size: 16px; }
+	h3 { font-size: 14px; }
+}
+
+
+/* #### Mobile Phones Portrait #### */
+@media screen and (max-device-width: 480px) and (orientation: portrait){
+  /* some CSS here */
+}
+
+/* #### Mobile Phones Landscape #### */
+@media screen and (max-device-width: 640px) and (orientation: landscape){
+  /* some CSS here */
+}
+
+/* #### Mobile Phones Portrait or Landscape #### */
+@media screen and (max-device-width: 640px){
+  /* some CSS here */
+}
+
+/* #### iPhone 4+ Portrait or Landscape #### */
+@media screen and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2){
+  /* some CSS here */
+}
+
+/* #### Tablets Portrait or Landscape #### */
+@media screen and (min-device-width: 768px) and (max-device-width: 1024px){
+  /* some CSS here */
+}
+
+/* #### Desktops #### */
+@media screen and (min-width: 1024px){
+  /* some CSS here */
 }
