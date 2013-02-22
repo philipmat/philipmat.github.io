@@ -8,10 +8,10 @@ body {
 
 a, a:active {
 	text-decoration: none;
+	color: #586e75;
 }
-a:hover {
-	text-decoration: underline;
-}
+a:hover { text-decoration: underline; }
+a:visited { color: #586e75; }
 
 #title {
 	clear: both;
@@ -57,6 +57,10 @@ a:hover {
 
 #content {
 	margin-top: 40px;
+	padding-left: 80px;
+	padding-top: 10px;
+	padding-bottom: 40px;
+	min-height: 130px;
 }
 
 article h1, article h2, article h3, article h4, article h5, article h6,
@@ -67,16 +71,6 @@ article p, article blockquote {
 
 article h1 {
 	font-size: 2em;
-}
-
-article.post {
-	display: block;
-	position: relative;
-	padding-left: 80px;
-	padding-top: 10px;
-	padding-bottom: 40px;
-	min-height: 130px;
-	/* overflow-x: hidden; */
 }
 
 pre code {
@@ -136,8 +130,8 @@ blockquote {
 
 	#content {
 		max-width: 100%;
-		margin-top: 20px;
-		padding: 0;
+		margin-top: 30px;
+		padding: 10px 8px;
 	}
 
 	#sidebar { display: none }
@@ -148,7 +142,7 @@ blockquote {
 		padding-right: 8px;
 	}
 	article.post {
-		padding: 0 0 0 8px;
+		/* padding: 0 0 0 8px; */
 	}
 
 	.title { margin-bottom: 4px }
