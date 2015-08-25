@@ -69,8 +69,19 @@ article p, article blockquote {
 	padding-right: 100px;
 }
 
+article {
+	margin-bottom: 100px;
+}
+
 article h1 {
 	font-size: 2em;
+	margin-bottom: 0.5em;
+}
+
+.post .date { 
+	float: none;
+	width: 100%;
+	color: #d2d2d2;
 }
 
 pre code {
@@ -140,6 +151,9 @@ blockquote {
 	article p, article blockquote {
 		max-width: 100%;
 		padding-right: 8px;
+	}
+	article {
+		margin-bottom: 50px;
 	}
 	article.post {
 		/* padding: 0 0 0 8px; */
