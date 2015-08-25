@@ -3,7 +3,15 @@ layout: base
 ---
 <article class="post">
 	<h1 class="title">{{ page.title }}</h1>
+			print page
+		endif
+	%}
+
+	{% if page.date %}
 	<div class="date"><time pubdate datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%a, %b %d %Y" }}</time></div>
+	{% else %}
+	<div class="date">(draft)</div>
+	{% endif %}
 	<div class="body">
 		{% if page.has_tldr %}
 		<p class="skip-tldr"><i>If you have an attention span as short as mine, feel free to <a href="#tldr">skip to the <abbr title="Too Long; Didn't Read">TL;DR</abbr></a>.</i></p>
