@@ -1,6 +1,6 @@
-desc 'Running Jekyll with --auto --server'
+desc 'Running Jekyll with serve --watch'
 task :dev do
-	system('jekyll --auto --server')
+	system('jekyll serve --watch')
 end
 
 desc 'Cleans up the output folder'
@@ -12,7 +12,7 @@ end
 
 desc 'Build the sites folder'
 task :build do
-	system('jekyll')
+	system('jekyll build')
 end
 
 desc 'Rebuild the _sites folder from the ground-up'
