@@ -20,40 +20,40 @@ task :rebuild => [:clean, :build] do
 end
 
 desc 'List current drafts'
-task :drafts do 
-	Dir.glob('./drafts/*') { |x|
-		puts "  " + File.basename(x)
-	}
+task :drafts, :file, :op do |t, args|
+	file = select_file('draft', 'drafts', args[:file])
+	puts args
+	op = args[:op]
+	if not file
+		return
+	end
+	
+	if not op 
+		print "(P)ublish, (E)dit, (D)elete: "
+		op = STDIN.gets.chomp
+	end
+	op.upcase!
+	op_task = nil
+	case op
+	when 'P'
+		op_task = :publish
+	when 'E'
+		op_task = :edit
+	when 'D'
+		op_task = :delete
+	end
+	Rake::Task[op_task].invoke(file)
 end
 
 desc 'Promote a draft to published post.'
-task :publish do
-	files = Dir.glob('./drafts/*')
-	if files.length == 0
-		puts "No drafts."
-		exit
+task :publish, :file do |t, args|
+	file = args[:file]
+	if not file
+		return
 	end
-	puts "Drafts:"
-	files.each_with_index { |f,i|
-		puts "#{i+1}. " + File.basename(f)
-	}
-	print "Select a draft to publish: "
-	draft = STDIN.gets
-	draft.chomp!
-	if draft == "" 
-		puts "Nothing."
-		exit
-	end
-	draft = draft.to_i - 1
-	if draft < 0 || draft >= files.length
-		puts "Not in range."
-		exit
-	end
-	file = files[draft]
 	print "Publish " + File.basename(file) + " as of today? [Y or other date]: "
 	require 'date'
-	date = STDIN.gets
-	date.chomp!
+	date = STDIN.gets.chomp
 	if date == "" || date == "Y"
 		date = Date.today
 	else
@@ -65,6 +65,25 @@ task :publish do
 	puts "from #{src} \n to  #{dest}"
 	File.rename(src, dest)
 	# TODO: update the header in the file
+end
+
+desc 'Edits a draft.'
+task :edit, :file do |t, args|
+	file = args[:file]
+	if not file
+		return
+	end
+	editor = ENV['EDITOR']	
+	# if I don't put this in, it doesn't stop on the next one
+	# STDIN.getc.upcase
+	print "Edit with #{editor}? [Y or other editor]: "
+	ed = STDIN.gets
+	ed.chomp!
+	if ed.upcase == 'Y' || ed == ''
+		ed = editor
+	end
+	command = "#{ed} #{file}"
+	system(command)
 end
 
 desc 'PhilipM.at tasks'
@@ -83,4 +102,34 @@ namespace :pmat do
 		puts "Executing: #{command}."
 		system(command)
 	end
+end
+
+def select_file(type, folder, file) 
+	# is this a real file?
+	actual = File.join(folder, file || '')
+	if File.file?(actual)
+		puts "File #{actual} exists."
+		return File.absolute_path(actual)
+	end
+
+	# doesn't. maybe file is a partial
+	files = Dir.glob("./#{folder}/#{file}*")
+	if files.count == 1
+		return files[0]
+	end
+	files.each_with_index { |x, i|
+		puts "#{i+1}.  " + File.basename(x)
+	}
+	print "Select a #{type}: "
+	draft = STDIN.gets.chomp
+	if draft == "" 
+		puts "Nothing."
+		exit
+	end
+	draft = draft.to_i - 1
+	if draft < 0 || draft >= files.length
+		puts "Not in range."
+		exit
+	end
+	file = files[draft]
 end
