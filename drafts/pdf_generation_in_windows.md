@@ -215,3 +215,5 @@ these sub-reports are included
 [template]: http://johnnycode.com/2010/03/05/using-a-template-to-programmatically-create-pdfs-with-c-and-itextsharp/
 [ghrepview]: https://github.com/philipmat/reportviewer
 [ghrepview1]: https://github.com/philipmat/reportviewer
+[chinookdb]: http://chinookdatabase.codeplex.com/
+[chdbmodel]: http://chinookdatabase.codeplex.com/wikipage?title=Chinook_Schema&referringTitle=Documentation
