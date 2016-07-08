@@ -1,9 +1,12 @@
-markdown: rdiscount
-highlighter: pygments
+markdown: kramdown
+highlighter: rouge
 exclude: 
- - ./_drafts
- - README
- - Rakefile
+  - ./_drafts
+  - README
+  - Rakefile
 # permalink: /:year/:month:day
 permalink: /:year/:title.html
-
+kramdown:
+  input: GFM
+  auto_ids: true
+  syntax_highlighter: rouge
