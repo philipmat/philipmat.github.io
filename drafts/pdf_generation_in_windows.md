@@ -12,18 +12,14 @@ to the smallest detail and the most advanced features.
 
 However, it's also 2015 and writing code like the following:
 
-```
 {% highlight c# %}
-
 PdfContentByte pcb = writer.DirectContent;
 pcb.BeginText();
 BaseFont font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, false);
 pcb.SetFontAndSize(font, 36);
 pcb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "Hello", 280, 190, 0)
 pcb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "World", 280, 680, 0)
-
 {% endhighlight %}
-```
 
 reeks of the dark days of AWT.
 
@@ -97,9 +93,7 @@ ReportViewer control level an event that gets triggered when our
 subreports get loaded.
 
 {% highlight c# %}
-
-{% endhighlight %} 
-
+{% endhighlight %}
 
 ## Controlling visual elements
 
@@ -121,10 +115,9 @@ In addition, if the field is null, we'd like to display *(None)*.
 To do this, we'll open up the property editor and 
 set the value of the field to the following expression.
 
-[property editor image]
+![property editor image][property_editor_image]
 
 {% highlight vb %}
-
 {% endhighlight %}
 
 ### Conditional formatting
@@ -135,7 +128,6 @@ in red if any of the values are negative.
 In the property editor window, we'll use the ??? field's expression editor:
 
 {% highlight vb %}
-
 {% endhighlight %}
 
 ### Visibility
@@ -150,7 +142,7 @@ address, phone, etc. To do so, we'll add all those fields to a panel and
 set the panel's ??? property based on whether a combination of fields are 
 null or not.
 
-[block image]
+![block image][block_image]
 
 And the visibility property is set to: `=IIF()`. 
 
@@ -171,7 +163,6 @@ The `RenderToPdf` method returns through an `out` parameter warning (and errrors
 resulted from running the report.
 
 {% highlight c# %}
-
 {% endhighlight %}
 
 While these may be interesting during development and testing phase, 
@@ -216,3 +207,6 @@ these sub-reports are included
 [ghrepview1]: https://github.com/philipmat/reportviewer
 [chinookdb]: http://chinookdatabase.codeplex.com/
 [chdbmodel]: http://chinookdatabase.codeplex.com/wikipage?title=Chinook_Schema&referringTitle=Documentation
+[property_editor_image]: http://example.com/
+[block_image]: http://example.com/
+
