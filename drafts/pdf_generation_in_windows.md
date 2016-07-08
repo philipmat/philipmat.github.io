@@ -75,8 +75,7 @@ passed into the report and then we just rended the report and get the PDF output
 as bytes.
 
 {% highlight c# %}
-
-{% endhighlight }
+{% endhighlight %}
 
 ## Subreports
 
