@@ -207,7 +207,6 @@ clone my [method-override-example][example] repo
 and simply run `npm start` then navigate to <http://localhost:3000/>
 to play with each of these scenarios.
 
-
 [method-override]: https://github.com/expressjs/method-override
 [example]: https://github.com/philipmat/method-override-examples
 [moreadme]: https://github.com/expressjs/method-override/blob/master/README.md
