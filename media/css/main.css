@@ -84,6 +84,16 @@ article h1 {
 	color: #d2d2d2;
 }
 
+
+/* When using the {% highlight %} syntax, 
+  the code adds a <figure> block to which 
+  the browsers apply their own margins (typically 1em 40px 1em 40px)
+  Doesn't happen with ``` syntax.
+  */
+figure.highlight {
+	margin: 0;
+}
+
 pre code {
 	border: none;
 	display: block;
