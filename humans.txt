@@ -12,4 +12,4 @@ layout: null
 
 	Language: English
 	Doctype: HTML5
-	Software: MacVim, jekyll
+	Software: VSCode, jekyll
