@@ -25,7 +25,7 @@ To enable this mailbox:
 
 Here's a visual that shows these steps:
 
-![Steps to enable smart mailbox](/media/images/unread_emails-med.jpg)
+[![Steps to enable smart mailbox](/media/images/unread_emails-med.jpg)](/media/images/unread_emails-med.jpg)
 
 The configuration does not sync across devices, so if you also have an iPad,
 you'll need to repeat these steps on those other devices.
