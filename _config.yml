@@ -2,8 +2,11 @@ markdown: kramdown
 highlighter: rouge
 exclude: 
   - ./_drafts
+  - CNAME
   - README
   - Rakefile
+  - run.sh
+  - run.ps1
 # permalink: /:year/:month:day
 permalink: /:year/:title.html
 kramdown:

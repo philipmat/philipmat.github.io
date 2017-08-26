@@ -13,6 +13,7 @@ a, a:active {
 a:hover { text-decoration: underline; }
 a:visited { color: #586e75; }
 
+/* these are the links in the header */
 #title {
 	clear: both;
 	height: 20px;
@@ -54,7 +55,6 @@ a:visited { color: #586e75; }
 	padding: 0.5em;
 }
 
-
 #content {
 	margin-top: 40px;
 	padding-left: 80px;
@@ -64,9 +64,15 @@ a:visited { color: #586e75; }
 }
 
 article h1, article h2, article h3, article h4, article h5, article h6,
-article p, article blockquote {
+article p, article blockquote,
+article ol, article ul {
 	max-width: 550px;
 	padding-right: 100px;
+}
+
+article img {
+	height: auto;
+	width: 100%;
 }
 
 article {
@@ -82,6 +88,16 @@ article h1 {
 	float: none;
 	width: 100%;
 	color: #d2d2d2;
+}
+
+
+/* When using the {% highlight %} syntax, 
+  the code adds a <figure> block to which 
+  the browsers apply their own margins (typically 1em 40px 1em 40px)
+  Doesn't happen with ``` syntax.
+  */
+figure.highlight {
+	margin: 0;
 }
 
 pre code {
@@ -148,7 +164,7 @@ blockquote {
 	#sidebar { display: none }
 
 	article h1, article h2, article h3, article h4, article h5, article h6,
-	article p, article blockquote {
+	article p, article blockquote, article ol, article ul {
 		max-width: 100%;
 		padding-right: 8px;
 	}
