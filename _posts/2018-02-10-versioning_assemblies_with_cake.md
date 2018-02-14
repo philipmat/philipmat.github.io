@@ -77,7 +77,7 @@ from the `Properties/AssemblyInfo.cs` file into its own
 but we'll start with a value of:
 
 ```csharp
-[assembly: System.Reflection.AssemblyInformationalVersion("1.0.0.")]
+[assembly: System.Reflection.AssemblyInformationalVersion("1.0.0.0")]
 ```
 
 Next we'll create a `Task("Version")` in our `build.cake` file that
@@ -102,6 +102,11 @@ Task("Version")
     // but Cake.Git doesn't currently support it.
     var sha = branch.Tip.Sha.Substring(0, 8);
 
+    // TODO: branch.FriendlyName produces a name too long when using gitflow,
+    // e.g. "1.0.12fa582d-feature/MYPROJ-2732-title_of_story_or_defect".
+    // There should be an attempt to extract maybe the issue identifier
+    // so that we end with something like "1.0.12fa582d-MYPROJ-2732"
+    // or "1.0.12fa582d-f-title_of_story"
     CreateAssemblyInfo(assemblyInfo, new AssemblyInfoSettings {
         InformationalVersion = string.Format("1.0.{0}-{1}", branch.FriendlyName, sha)
     });
@@ -133,7 +138,7 @@ the product version will reflect it accordingly:
 
 ![Product Version with Git Info](/media/images/product_info2.png)
 
-*Note*: if we had multiple assemblies, like normal projects do,
+*Note 1*: if we had multiple assemblies, like normal projects do,
 we would have a single `AssemblyInfoVersion.cs`, likely in the root of the project,
 and we would link that file into each project to ensure they all get
 the same product version:
@@ -144,6 +149,10 @@ the same product version:
 </None>
 ```
 
+*Note 2*: it seems reasonable that we should maybe perform a check
+to see if all changes have been committed before the build, otherwise
+the build would incorporate the changes on disk while still picking up
+the HEAD SHA1.
 
 
 
