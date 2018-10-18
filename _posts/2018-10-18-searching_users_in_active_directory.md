@@ -74,9 +74,33 @@ that the Principal version: whereas the former returns,
 in my attempts, in about 500ms, the directory searcher version
 takes 800-1,100ms for the same operation.
 
+The type returned by the two methods is also another factor
+worth considering.
+
+The [`SearchResult`][search_result] returned by the directory
+searcher method is sparse and all interaction is to be done
+through its `Properties` property, which is an implementation
+of `System.Collections.DictionaryBase`.  
+These properties are really LDAP properties and to get
+information out of a search result one needs to know
+what these properties represent -- for example,
+knowing that "c" represent "country",
+or "sn" is "surname", or "cn" is "common name".
+
+
+In contrast, the `UserPrincipal` class offered
+by the `PrincipalSearchResult<T>`
+has more [straighforward properties][user_principal_props]:
+`Surname`, `GivenName`, etc,
+although it might not have some of the properties
+stored in LDAP, for example the above mentioned *c = countryName*.
+
 Due to its more straightforward nature, I will be personally
 employing `PrincipalSearcher` for simple search queries
 and hope that I would never have to land in a case
 where I require the full power of the `DirectorySearcher`.
 
 However, if I do - I now know what to search for.
+
+[search_result]: https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.searchresult
+[user_principal_props]: https://docs.microsoft.com/en-us/dotnet/api/system.directoryservices.accountmanagement.userprincipal#properties
