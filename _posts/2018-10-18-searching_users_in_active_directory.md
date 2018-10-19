@@ -93,7 +93,7 @@ by the `PrincipalSearchResult<T>`
 has more [straighforward properties][user_principal_props]:
 `Surname`, `GivenName`, etc,
 although it might not have some of the properties
-stored in LDAP, for example the above mentioned *c = countryName*.
+stored in LDAP, for example the afore mentioned *c = countryName*.
 
 Due to its more straightforward nature, I will be personally
 employing `PrincipalSearcher` for simple search queries
