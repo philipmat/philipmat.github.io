@@ -156,6 +156,13 @@ that the memory usage of the application while
 generating 100k or even 1M records is fairly
 small and constant past the initial load.
 
+*Note*: a nicer implementation of this would
+make use of a [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern),
+in which a `CsvVisitor` would visit
+any `T` implementation that accepts such
+a visitor allowing even further decoupling
+between the objects being enumerated
+and the class doing the writing.
 
 [file]: https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase.file?view=aspnetcore-2.1
 [inspiration]: https://stackoverflow.com/a/22834363
