@@ -4,9 +4,9 @@ layout: page
 ---
 
 Hi, I am [Philip Mateescu](https://www.linkedin.com/in/philipmateescu),
-owner of [Variable Consulting](http://variableconsulting.com/).
+owner of [Variable Consulting](https://variableconsulting.com/).
 
-Checkout [my github page](http://github.com/philipmat) to see what projects I am working on.
+Checkout [my github page](https://github.com/philipmat) to see what projects I am working on.
 
 If you would like to contact me, you can [see here how](/contact.html).
 
@@ -33,6 +33,7 @@ Can't live without:
 
 Could live without, but choose not to:
 
+* [Double Commander](https://doublecmd.sourceforge.io/) - cross-platform, open source file manager
 * [DTerm](http://decimus.net/DTerm) - a context-sensitive command line
 * [Instapaper](http://www.instapaper.com) - for off-line reading
 * [Tweetbot](http://tapbots.com/software/tweetbot/) - best looking [Twitter](http://twitter.com/philipmat) client
@@ -49,4 +50,3 @@ Nice to have around:
 * [GoodReader](http://www.goodiware.com/goodreader.html) - PDF (and more) reader for iOS
 * Pages and Numbers
 * [Pixelmator](http://www.pixelmator.com/)
-* [Double Commander](https://doublecmd.sourceforge.io/) - cross-platform, open source file manager

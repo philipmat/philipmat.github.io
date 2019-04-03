@@ -5,10 +5,10 @@ layout: null
 <feed xmlns="http://www.w3.org/2005/Atom">
  
  <title>Philip Mateescu</title>
- <link href="http://philipm.at/atom.xml" rel="self"/>
- <link href="http://philipm.at/"/>
+ <link href="https://philipm.at/atom.xml" rel="self"/>
+ <link href="https://philipm.at/"/>
  <updated>{{ site.time | date_to_xmlschema }}</updated>
- <id>http://philipm.at/</id>
+ <id>https://philipm.at/</id>
  <author>
    <name>Philip Mateescu</name>
    <email>hello@philipm.at</email>
@@ -17,9 +17,9 @@ layout: null
  {% for post in site.posts %}
  <entry>
    <title>{{ post.title }}</title>
-   <link href="http://philipm.at{{ post.url }}"/>
+   <link href="https://philipm.at{{ post.url }}"/>
    <updated>{{ post.date | date_to_xmlschema }}</updated>
-   <id>http://philipm.at{{ post.id }}</id>
+   <id>https://philipm.at{{ post.id }}</id>
    <content type="html">{{ post.content | xml_escape }}</content>
  </entry>
  {% endfor %}
