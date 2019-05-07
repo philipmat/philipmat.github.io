@@ -4,10 +4,10 @@ title: Loading Claims when Using Windows Authentication in ASP.NET Core 2.x
 ---
 
 Much like almost everything else in ASP.NET Core,
-[enabling Windows Authentication in ASP.NET Core](configure_winauth)
+[enabling Windows Authentication in ASP.NET Core][configure_winauth]
 is well documented and has supperb step-by-step examples.
 
-The [Claims-based authorization system](claims_auth) is documented
+The [Claims-based authorization system][claims_auth] is documented
 just as well and the examples are well chosen.
 
 Where I thought the documentation fell short was the marrying
@@ -30,13 +30,13 @@ values, save perhaps for the `.../name` claim:
 | <http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid> | S-1-5-4 |
 | etc | etc |
 
-In contrast, the [Claims examples](claims_auth) make use of such
+In contrast, the [Claims examples][claims_auth] make use of such
 nicely named claims like `"EmployeeNumber"` or `ClaimTypes.DateOfBirth`,
 none of which can be found in the claims collection of our Windows user.
 
 To load claim in ASP.NET Core 2.x we make use of one or more
 *claims tranformations*, classes implementing
-[`IClaimsTransformation`](iclaimstransf)
+[`IClaimsTransformation`][iclaimstransf]
 (used to be called `IClaimsTransformer` in earlier versions),
 which get access to the `ClaimsPrincipal` and can
 construct new ones or add claims to the loaded one.
@@ -107,14 +107,14 @@ they will continue to behave as such until they log in again.
 
 Second, they run *on each* `AuthenticateAsync` call, so we will
 heed this warning from the
-[documentation of `TransformAsync`](transfasync):
+[documentation of `TransformAsync`][transfasync]:
 
 > Note: this will be run on each AuthenticateAsync call,
 so its safer to return a new ClaimsPrincipal if your transformation is not idempotent.
 
 This is because if any call (tests?) causes `AuthenticateAsync`
 to be called twice, the same claim is added twice to the collection
-as pointed out in [this article by Brock Allen](ba_claims_multiple).
+as pointed out in [this article by Brock Allen][ba_claims_multiple].
 
 ```csharp
 using System.Security.Claims; // for ClaimsPrincipal
