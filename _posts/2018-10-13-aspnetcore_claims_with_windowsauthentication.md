@@ -3,9 +3,21 @@ layout: post
 title: Loading Claims when Using Windows Authentication in ASP.NET Core 2.x
 ---
 
+**NOTE 1:** the post below applies to ASP.NET Core 2.x.  
+Things have remained conceptually the same in 3.1 and 5.0,
+though a few registration options or layouts may have
+been changed. For an updated version of the code in here, see
+[my Github repo](https://github.com/philipmat/AspNetCoreWindowsAuthClaims)
+which contains a fully runnable sample.
+
+**NOTE 2:** When using IIS Express, the claim transformation
+mentioned in this post is called on each request.  
+The [Cached Claims post]({% post_url 2020-01-26-cached_claims %})
+suggests an approach to overcoming this behavior.
+
 Much like almost everything else in ASP.NET Core,
 [enabling Windows Authentication in ASP.NET Core][configure_winauth]
-is well documented and has supperb step-by-step examples.
+is well documented and has superb step-by-step examples.
 
 The [Claims-based authorization system][claims_auth] is documented
 just as well and the examples are well chosen.
@@ -35,7 +47,7 @@ nicely named claims like `"EmployeeNumber"` or `ClaimTypes.DateOfBirth`,
 none of which can be found in the claims collection of our Windows user.
 
 To load claim in ASP.NET Core 2.x we make use of one or more
-*claims tranformations*, classes implementing
+*claims transformations*, classes implementing
 [`IClaimsTransformation`][iclaimstransf]
 (used to be called `IClaimsTransformer` in earlier versions),
 which get access to the `ClaimsPrincipal` and can
