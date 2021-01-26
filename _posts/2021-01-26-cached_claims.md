@@ -104,4 +104,4 @@ For a full example, containing all the code, see [this repo][repo].
 [claims_auth]: https://docs.microsoft.com/en-us/aspnet/core/security/authorization/claims?view=aspnetcore-3.1
 [my_claims]: https://github.com/philipmat/AspNetCoreWindowsAuthClaims/blob/master/Auth/MyClaimsLoader.cs#L31
 [repo]: https://github.com/philipmat/AspNetCoreWindowsAuthClaims
-[claims_post]: {% post_url 2018-10-13-aspnetcore_claims_with_windowsauthentication %}
+[claims_post]: /2018/aspnetcore_claims_with_windowsauthentication.html

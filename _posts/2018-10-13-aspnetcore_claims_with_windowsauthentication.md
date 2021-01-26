@@ -12,7 +12,7 @@ which contains a fully runnable sample.
 
 **NOTE 2:** When using IIS Express, the claim transformation
 mentioned in this post is called on each request.  
-The [Cached Claims post]({% post_url 2020-01-26-cached_claims %})
+The [Cached Claims post](/2021/cached_claims.html)
 suggests an approach to overcoming this behavior.
 
 Much like almost everything else in ASP.NET Core,
