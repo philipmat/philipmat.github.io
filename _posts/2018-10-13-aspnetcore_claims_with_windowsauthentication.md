@@ -111,11 +111,11 @@ We'll be back here in a bit to register our claims loader
 Before we implement `IClaimsTransformation` a couple notes about it.
 
 First, they run on each `AuthenticateAsync` call, which means
-for IIS Authentication they run only once and whatever claims
+for IIS Authentication they *may* run only once and whatever claims
 we add to the collection are cached for as long as the user
 is logged in.  
 If we remove a logged in user from the list of administrators,
-they will continue to behave as such until they log in again.
+they *might* continue to behave as such until they log in again.
 
 Second, they run *on each* `AuthenticateAsync` call, so we will
 heed this warning from the

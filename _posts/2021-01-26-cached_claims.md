@@ -8,11 +8,6 @@ we examined an approach for injecting [Claims][claims_auth] into the `ClaimsPrin
 in order to enable policy usage -- `[Authorization(Policy = "SomePolicy")]` --
 on controller actions.
 
-This works well when running the application under IIS,
-but when in development and running under IIS Express,
-we would notice the claims transformation is being
-performed on each request.
-
 One of the purposes of the `IClaimsTransformation` implementation
 is to provide an easier, and somewhat efficient, way to use
 authorization policies. As such, we wouldn't be wrong to perform
