@@ -8,10 +8,10 @@ body {
 
 a, a:active {
 	text-decoration: none;
-	color: #586e75;
+	color: #087294;
 }
 a:hover { text-decoration: underline; }
-a:visited { color: #586e75; }
+a:visited { color: #087294; }
 
 /* these are the links in the header */
 #title {
