@@ -23,7 +23,7 @@ repo owner, so it ignores issues from anyone else).
 When it fires, a Python script (`.github/scripts/create_til.py`) does
 the following:
 
-1. **Fetches the issue** via the GitHub API -- title, body, and any comments.
+1. **Fetches the issue** via the GitHub API -- title and body.
 2. **Extracts a URL** from the body if one is present.
    If found, [trafilatura] fetches the page and strips it down to
    the main article text, dropping nav, ads, and boilerplate.
@@ -65,5 +65,9 @@ That's it. The `GITHUB_TOKEN` is provided automatically by Actions.
 The full plan for this workflow is in [plan-opus.md] in the repo root,
 including edge case handling, prompt design, and cost estimates.
 
+This work was done using Claude Opus for planning,
+Codex for implementation (with an alternative by Kimi),
+and Sonnet for review.
+
 [trafilatura]: https://trafilatura.readthedocs.io/
-[plan-opus.md]: /plan-opus.md
+[plan-opus.md]: /docs/features/til_action/plan-opus.md
