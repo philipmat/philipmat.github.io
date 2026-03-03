@@ -70,4 +70,4 @@ Codex for implementation (with an alternative by Kimi),
 and Sonnet for review.
 
 [trafilatura]: https://trafilatura.readthedocs.io/
-[plan-opus.md]: /docs/features/til_action/plan-opus.md
+[plan-opus.md]: /docs/features/til_action/plan-opus-01.md

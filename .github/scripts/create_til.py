@@ -12,6 +12,7 @@ GITHUB_API = "https://api.github.com"
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
+KNOWN_ACRONYMS = {"til", "ai", "llm", "api", "sql", "url", "html", "css", "js", "cli"}
 
 
 def get_env(name: str, required: bool = True) -> Optional[str]:
@@ -45,21 +46,19 @@ def post_comment(
     request_json("POST", url, token, json={"body": body})
 
 
-def find_first_url(text: str) -> Tuple[Optional[str], Optional[str]]:
+def split_body_around_url(text: str) -> Tuple[Optional[str], str, str]:
+    """Split issue body into (url, text_before_url, text_after_url).
+
+    Returns (None, full_text, "") if no URL is found.
+    """
     match = re.search(r"https?://\S+", text)
     if not match:
-        return None, None
+        return None, text.strip(), ""
     raw = match.group(0)
     cleaned = raw.rstrip(TRAILING_URL_PUNCT)
-    return raw, cleaned
-
-
-def remove_first_url(text: str, raw_url: str, cleaned_url: str) -> str:
-    updated = text.replace(raw_url, "", 1)
-    if cleaned_url != raw_url:
-        updated = updated.replace(cleaned_url, "", 1)
-    updated = re.sub(r"\n{3,}", "\n\n", updated)
-    return updated.strip()
+    before = text[: match.start()].strip()
+    after = text[match.start() + len(raw) :].strip()
+    return cleaned, before, after
 
 
 def is_meaningful_title(title: str) -> bool:
@@ -92,6 +91,8 @@ def normalize_tags(tags: Any) -> List[str]:
             cleaned.append(normalized)
         if len(cleaned) >= 5:
             break
+    if "til" not in cleaned:
+        cleaned.insert(0, "til")
     return cleaned or ["til"]
 
 
@@ -111,6 +112,20 @@ def ensure_snippet(snippet: str, fallback_text: str) -> str:
 
 def yaml_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def format_category_word(word: str) -> str:
+    """Title-case a word, or uppercase it if it's a known acronym."""
+    return word.upper() if word.lower() in KNOWN_ACRONYMS else word.title()
+
+
+def tag_to_category(tag: str) -> str:
+    """Convert a lowercase hyphenated tag to a display category name."""
+    return " ".join(format_category_word(word) for word in tag.split("-"))
+
+
+def tags_to_categories(tags: List[str]) -> List[str]:
+    return [tag_to_category(tag) for tag in tags]
 
 
 def parse_llm_json(raw_text: str) -> Dict[str, Any]:
@@ -187,8 +202,8 @@ def build_user_prompt_with_url(
             '- "title": A concise, descriptive title for the blog post (do NOT prefix with "TIL:")',
             '- "slug": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)',
             '- "summary": A 1-2 paragraph summary of the article\'s key points. Write in first person',
-            "  as if I'm sharing what I learned. If I provided comments above, naturally weave",
-            "  them into the summary.",
+            "  as if I'm sharing what I learned. Do NOT weave in my comments -- summarize the article",
+            "  itself only. My comments will appear separately in the post.",
             '- "tags": An array of 1-5 lowercase tags categorizing the content',
             '  (e.g., ["python", "web-development", "security"])',
             '- "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing',
@@ -237,6 +252,12 @@ def run_git(args: List[str]) -> None:
     subprocess.run(["git", *args], check=True)
 
 
+def make_summary_blockquote(summary: str) -> str:
+    lines = summary.strip().split("\n")
+    quoted = "\n".join(f"> {line}" if line.strip() else ">" for line in lines)
+    return f"> **Summary**\n>\n{quoted}"
+
+
 def main() -> None:
     github_token = get_env("GITHUB_TOKEN")
     openrouter_api_key = get_env("OPENROUTER_API_KEY")
@@ -260,11 +281,12 @@ def main() -> None:
         print("Issue author is not repository owner. Exiting.")
         return
 
-    raw_url, cleaned_url = find_first_url(issue_body)
-    url = cleaned_url
-    body_without_url = issue_body
-    if raw_url and cleaned_url:
-        body_without_url = remove_first_url(issue_body, raw_url, cleaned_url)
+    issue_labels = [label.get("name", "") for label in issue.get("labels", [])]
+    if "enhancement" in issue_labels:
+        print("Issue is labeled 'enhancement'. Skipping TIL creation.")
+        return
+
+    url, comments_before, comments_after = split_body_around_url(issue_body)
 
     if not issue_body.strip():
         post_comment(
@@ -278,6 +300,9 @@ def main() -> None:
 
     system_prompt = (
         "You are a helpful assistant that creates blog post metadata and summaries. "
+        "When summarizing articles, produce a standalone summary of the article's "
+        "key points -- do NOT incorporate the user's personal comments into the summary. "
+        "The user's comments will be displayed separately around the summary. "
         "You always respond with valid JSON and nothing else."
     )
 
@@ -285,7 +310,6 @@ def main() -> None:
     post_body: str
     has_url = bool(url)
     used_article = False
-    source_note: Optional[str] = None
 
     if has_url:
         downloaded = trafilatura.fetch_url(url)
@@ -301,42 +325,42 @@ def main() -> None:
         if extracted and len(extracted) >= 100:
             used_article = True
             article_text = truncate_text(extracted)
-            comments = body_without_url.strip()
+            all_comments = "\n\n".join(
+                part for part in [comments_before, comments_after] if part
+            )
             user_prompt = build_user_prompt_with_url(
-                article_text, comments, issue_title
+                article_text, all_comments, issue_title
             )
             llm_data = openrouter_request(
                 openrouter_api_key, system_prompt, user_prompt
             )
             summary = (llm_data.get("summary") or "").strip()
             if not summary:
-                summary = comments or extracted[:400].strip()
+                summary = all_comments or extracted[:400].strip()
             source_title = (
                 issue_title
                 if is_meaningful_title(issue_title)
                 else llm_data.get("title", "Source")
             )
-            post_body_parts = [summary]
-            if comments:
-                post_body_parts.extend(["", "My thoughts:", "", comments])
-            post_body_parts.extend(["", f"Source: [{source_title}]({url})"])
+            post_body_parts = []
+            if comments_before:
+                post_body_parts.append(comments_before)
+                post_body_parts.append("")
+            post_body_parts.append(make_summary_blockquote(summary))
+            post_body_parts.append("")
+            if comments_after:
+                post_body_parts.append(comments_after)
+                post_body_parts.append("")
+            post_body_parts.append(f"Source: [{source_title}]({url})")
             post_body = "\n".join(post_body_parts).strip()
         else:
-            source_note = "Source (unfetched)"
-            notes_text = body_without_url.strip()
+            notes_text = issue_body.strip()
             notes_for_prompt = notes_text or issue_title.strip()
             user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
             llm_data = openrouter_request(
                 openrouter_api_key, system_prompt, user_prompt
             )
-            source_title = (
-                issue_title
-                if is_meaningful_title(issue_title)
-                else llm_data.get("title", "Source")
-            )
-            post_body_parts = [notes_text] if notes_text else []
-            post_body_parts.extend(["", f"{source_note}: [{source_title}]({url})"])
-            post_body = "\n".join(part for part in post_body_parts if part).strip()
+            post_body = notes_text
     else:
         notes_text = issue_body.strip()
         if not notes_text:
@@ -352,11 +376,13 @@ def main() -> None:
         llm_data = openrouter_request(openrouter_api_key, system_prompt, user_prompt)
         post_body = notes_text
 
-    title = collapse_spaces(
-        str(llm_data.get("title") or issue_title or "Untitled")
-    ).strip()
+    if is_meaningful_title(issue_title):
+        title = collapse_spaces(issue_title).strip()
+    else:
+        title = collapse_spaces(str(llm_data.get("title") or "Untitled")).strip()
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
     tags = normalize_tags(llm_data.get("tags"))
+    categories = tags_to_categories(tags)
 
     summary_text = llm_data.get("summary") if used_article else ""
     snippet_source = summary_text or post_body
@@ -372,18 +398,21 @@ def main() -> None:
         file_path = os.path.join(posts_dir, filename)
 
     tag_list = ", ".join(tags)
+    category_yaml_list = ", ".join(categories)
 
     front_matter_lines = [
         "---",
         f"layout: post",
         f'title: "TIL: {yaml_escape(title)}"',
         f"tags: [{tag_list}]",
+        f"categories: [{category_yaml_list}]",
         f'snippet: "{yaml_escape(snippet)}"',
     ]
     if url:
         front_matter_lines.append(f"source_url: {url}")
     front_matter_lines.append("---")
 
+    post_body = post_body.rstrip() + f"\n\n*Categories: {', '.join(categories)}*"
     content = "\n".join(front_matter_lines) + "\n\n" + post_body.strip() + "\n"
     with open(file_path, "w", encoding="utf-8") as handle:
         handle.write(content)
