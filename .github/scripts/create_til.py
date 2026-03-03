@@ -30,13 +30,17 @@ def github_headers(token: str) -> Dict[str, str]:
 
 
 def request_json(method: str, url: str, token: str, **kwargs: Any) -> Dict[str, Any]:
-    response = requests.request(method, url, headers=github_headers(token), timeout=30, **kwargs)
+    response = requests.request(
+        method, url, headers=github_headers(token), timeout=30, **kwargs
+    )
     if response.status_code >= 400:
         raise SystemExit(f"GitHub API error {response.status_code}: {response.text}")
     return response.json()
 
 
-def post_comment(owner: str, repo: str, issue_number: int, token: str, body: str) -> None:
+def post_comment(
+    owner: str, repo: str, issue_number: int, token: str, body: str
+) -> None:
     url = f"{GITHUB_API}/repos/{owner}/{repo}/issues/{issue_number}/comments"
     request_json("POST", url, token, json={"body": body})
 
@@ -106,7 +110,7 @@ def ensure_snippet(snippet: str, fallback_text: str) -> str:
 
 
 def yaml_escape(text: str) -> str:
-    return text.replace("\\", "\\\\").replace("\"", "\\\"")
+    return text.replace("\\", "\\\\").replace('"', '\\"')
 
 
 def parse_llm_json(raw_text: str) -> Dict[str, Any]:
@@ -121,7 +125,9 @@ def parse_llm_json(raw_text: str) -> Dict[str, Any]:
         return json.loads(stripped)
 
 
-def openrouter_request(api_key: str, system_prompt: str, user_prompt: str) -> Dict[str, Any]:
+def openrouter_request(
+    api_key: str, system_prompt: str, user_prompt: str
+) -> Dict[str, Any]:
     response = requests.post(
         OPENROUTER_API,
         headers={
@@ -154,7 +160,7 @@ def build_user_prompt_with_url(
     issue_title: Optional[str],
 ) -> str:
     prompt = [
-        "I want to create a short \"Today I Learned\" blog post based on the following article.",
+        'I want to create a short "Today I Learned" blog post based on the following article.',
         "",
         "Article content:",
         "---",
@@ -163,35 +169,39 @@ def build_user_prompt_with_url(
         "",
     ]
     if comments:
-        prompt.extend([
-            "My additional thoughts/comments:",
-            "---",
-            comments,
-            "---",
-            "",
-        ])
+        prompt.extend(
+            [
+                "My additional thoughts/comments:",
+                "---",
+                comments,
+                "---",
+                "",
+            ]
+        )
     if issue_title and is_meaningful_title(issue_title):
         prompt.append(f"Suggested title: {issue_title}")
         prompt.append("")
-    prompt.extend([
-        "Please respond with a JSON object containing:",
-        "- \"title\": A concise, descriptive title for the blog post (do NOT prefix with \"TIL:\")",
-        "- \"slug\": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)",
-        "- \"summary\": A 1-2 paragraph summary of the article's key points. Write in first person",
-        "  as if I'm sharing what I learned. If I provided comments above, naturally weave",
-        "  them into the summary.",
-        "- \"tags\": An array of 1-5 lowercase tags categorizing the content",
-        "  (e.g., [\"python\", \"web-development\", \"security\"])",
-        "- \"snippet\": A single sentence (max 200 chars) summarizing the post for an archive listing",
-        "",
-        "Respond with ONLY the JSON object, no markdown fences or other text.",
-    ])
+    prompt.extend(
+        [
+            "Please respond with a JSON object containing:",
+            '- "title": A concise, descriptive title for the blog post (do NOT prefix with "TIL:")',
+            '- "slug": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)',
+            '- "summary": A 1-2 paragraph summary of the article\'s key points. Write in first person',
+            "  as if I'm sharing what I learned. If I provided comments above, naturally weave",
+            "  them into the summary.",
+            '- "tags": An array of 1-5 lowercase tags categorizing the content',
+            '  (e.g., ["python", "web-development", "security"])',
+            '- "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing',
+            "",
+            "Respond with ONLY the JSON object, no markdown fences or other text.",
+        ]
+    )
     return "\n".join(prompt)
 
 
 def build_user_prompt_no_url(body_text: str, issue_title: Optional[str]) -> str:
     prompt = [
-        "I want to create a short \"Today I Learned\" blog post from my notes below.",
+        'I want to create a short "Today I Learned" blog post from my notes below.',
         "",
         "My notes:",
         "---",
@@ -202,16 +212,18 @@ def build_user_prompt_no_url(body_text: str, issue_title: Optional[str]) -> str:
     if issue_title and is_meaningful_title(issue_title):
         prompt.append(f"Suggested title: {issue_title}")
         prompt.append("")
-    prompt.extend([
-        "Please respond with a JSON object containing:",
-        "- \"title\": A concise, descriptive title for the blog post (do NOT prefix with \"TIL:\")",
-        "- \"slug\": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)",
-        "- \"tags\": An array of 1-5 lowercase tags categorizing the content",
-        "- \"snippet\": A single sentence (max 200 chars) summarizing the post for an archive listing",
-        "",
-        "Do NOT include a \"summary\" field -- I will use my notes directly as the post body.",
-        "Respond with ONLY the JSON object, no markdown fences or other text.",
-    ])
+    prompt.extend(
+        [
+            "Please respond with a JSON object containing:",
+            '- "title": A concise, descriptive title for the blog post (do NOT prefix with "TIL:")',
+            '- "slug": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)',
+            '- "tags": An array of 1-5 lowercase tags categorizing the content',
+            '- "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing',
+            "",
+            'Do NOT include a "summary" field -- I will use my notes directly as the post body.',
+            "Respond with ONLY the JSON object, no markdown fences or other text.",
+        ]
+    )
     return "\n".join(prompt)
 
 
@@ -237,7 +249,9 @@ def main() -> None:
 
     owner, repo = repository.split("/", 1)
 
-    issue = request_json("GET", f"{GITHUB_API}/repos/{owner}/{repo}/issues/{issue_number}", github_token)
+    issue = request_json(
+        "GET", f"{GITHUB_API}/repos/{owner}/{repo}/issues/{issue_number}", github_token
+    )
     issue_user = issue.get("user", {}).get("login", "")
     issue_title = issue.get("title") or ""
     issue_body = issue.get("body") or ""
@@ -275,19 +289,33 @@ def main() -> None:
 
     if has_url:
         downloaded = trafilatura.fetch_url(url)
-        extracted = trafilatura.extract(downloaded) if downloaded else None
+        extracted = (
+            trafilatura.extract(
+                downloaded, include_comments=False, include_tables=False
+            )
+            if downloaded
+            else None
+        )
         if extracted:
             extracted = extracted.strip()
         if extracted and len(extracted) >= 100:
             used_article = True
             article_text = truncate_text(extracted)
             comments = body_without_url.strip()
-            user_prompt = build_user_prompt_with_url(article_text, comments, issue_title)
-            llm_data = openrouter_request(openrouter_api_key, system_prompt, user_prompt)
+            user_prompt = build_user_prompt_with_url(
+                article_text, comments, issue_title
+            )
+            llm_data = openrouter_request(
+                openrouter_api_key, system_prompt, user_prompt
+            )
             summary = (llm_data.get("summary") or "").strip()
             if not summary:
                 summary = comments or extracted[:400].strip()
-            source_title = issue_title if is_meaningful_title(issue_title) else llm_data.get("title", "Source")
+            source_title = (
+                issue_title
+                if is_meaningful_title(issue_title)
+                else llm_data.get("title", "Source")
+            )
             post_body_parts = [summary]
             if comments:
                 post_body_parts.extend(["", "My thoughts:", "", comments])
@@ -298,8 +326,14 @@ def main() -> None:
             notes_text = body_without_url.strip()
             notes_for_prompt = notes_text or issue_title.strip()
             user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
-            llm_data = openrouter_request(openrouter_api_key, system_prompt, user_prompt)
-            source_title = issue_title if is_meaningful_title(issue_title) else llm_data.get("title", "Source")
+            llm_data = openrouter_request(
+                openrouter_api_key, system_prompt, user_prompt
+            )
+            source_title = (
+                issue_title
+                if is_meaningful_title(issue_title)
+                else llm_data.get("title", "Source")
+            )
             post_body_parts = [notes_text] if notes_text else []
             post_body_parts.extend(["", f"{source_note}: [{source_title}]({url})"])
             post_body = "\n".join(part for part in post_body_parts if part).strip()
@@ -318,7 +352,9 @@ def main() -> None:
         llm_data = openrouter_request(openrouter_api_key, system_prompt, user_prompt)
         post_body = notes_text
 
-    title = collapse_spaces(str(llm_data.get("title") or issue_title or "Untitled")).strip()
+    title = collapse_spaces(
+        str(llm_data.get("title") or issue_title or "Untitled")
+    ).strip()
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
     tags = normalize_tags(llm_data.get("tags"))
 
@@ -340,9 +376,9 @@ def main() -> None:
     front_matter_lines = [
         "---",
         f"layout: post",
-        f"title: \"TIL: {yaml_escape(title)}\"",
+        f'title: "TIL: {yaml_escape(title)}"',
         f"tags: [{tag_list}]",
-        f"snippet: \"{yaml_escape(snippet)}\"",
+        f'snippet: "{yaml_escape(snippet)}"',
     ]
     if url:
         front_matter_lines.append(f"source_url: {url}")
@@ -355,7 +391,13 @@ def main() -> None:
     branch_name = f"til/{slug}-{issue_number}"
 
     run_git(["config", "user.name", "github-actions[bot]"])
-    run_git(["config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"])
+    run_git(
+        [
+            "config",
+            "user.email",
+            "41898282+github-actions[bot]@users.noreply.github.com",
+        ]
+    )
 
     run_git(["checkout", "-b", branch_name])
     run_git(["add", file_path])
@@ -366,7 +408,7 @@ def main() -> None:
     base_branch = repo_info.get("default_branch", "main")
 
     pr_body_lines = [
-        f"Created from issue #{issue_number}.",
+        f"Closes #{issue_number}.",
     ]
     if url:
         pr_body_lines.append(f"Source: {url}")
@@ -379,14 +421,31 @@ def main() -> None:
         "body": pr_body,
     }
 
-    pr = request_json("POST", f"{GITHUB_API}/repos/{owner}/{repo}/pulls", github_token, json=pr_payload)
+    pr = request_json(
+        "POST",
+        f"{GITHUB_API}/repos/{owner}/{repo}/pulls",
+        github_token,
+        json=pr_payload,
+    )
     pr_number = pr.get("number")
     pr_url = pr.get("html_url")
 
     if pr_number and pr_url:
-        post_comment(owner, repo, issue_number, github_token, f"Created PR #{pr_number}: {pr_url}")
+        post_comment(
+            owner,
+            repo,
+            issue_number,
+            github_token,
+            f"Created PR #{pr_number}: {pr_url}",
+        )
     else:
-        post_comment(owner, repo, issue_number, github_token, "Created a PR, but could not determine its URL.")
+        post_comment(
+            owner,
+            repo,
+            issue_number,
+            github_token,
+            "Created a PR, but could not determine its URL.",
+        )
 
 
 if __name__ == "__main__":
