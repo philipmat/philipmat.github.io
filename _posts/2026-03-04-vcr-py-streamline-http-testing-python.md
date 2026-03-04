@@ -2,7 +2,7 @@
 layout: post
 title: "TIL: VCR.py -- records and replays HTTP calls for testing"
 tags: [til, python, testing, http, development]
-categories: [TIL, Python, Testing, Http, Development]
+categories: [TIL, Python, Testing, API, Development]
 snippet: "Discover how VCR.py can simplify and speed up your HTTP testing by recording and replaying HTTP interactions."
 source_url: https://vcrpy.readthedocs.io/en/latest/
 ---
@@ -17,4 +17,4 @@ source_url: https://vcrpy.readthedocs.io/en/latest/
 
 Source: [VCR.py -- records and replays HTTP calls for testing](https://vcrpy.readthedocs.io/en/latest/)
 
-*Categories: TIL, Python, Testing, Http, Development*
+*Categories: TIL, Python, Testing, API, Development*
