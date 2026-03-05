@@ -84,6 +84,11 @@ article h1 {
 	margin-bottom: 0.5em;
 }
 
+article .tags.small {
+	font-size: 80%;
+	color: #777;
+}
+
 .post .date { 
 	float: none;
 	width: 100%;
