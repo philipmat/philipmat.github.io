@@ -12,6 +12,20 @@ GITHUB_API = "https://api.github.com"
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
+PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
+
+
+def load_prompt_text(filename: str) -> str:
+    path = os.path.join(PROMPT_DIR, filename)
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            return handle.read()
+    except FileNotFoundError as exc:
+        raise SystemExit(f"Missing prompt file: {path}") from exc
+
+
+def load_prompt_lines(filename: str) -> List[str]:
+    return load_prompt_text(filename).splitlines()
 
 def get_env(name: str, required: bool = True) -> Optional[str]:
     value = os.getenv(name)
@@ -180,21 +194,7 @@ def build_user_prompt_with_url(
     if issue_title and is_meaningful_title(issue_title):
         prompt.append(f"Suggested title: {issue_title}")
         prompt.append("")
-    prompt.extend(
-        [
-            "Please respond with a JSON object containing:",
-            '- "title": A concise, descriptive title for the blog post (do NOT prefix with "TIL:")',
-            '- "slug": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)',
-            '- "summary": A 1-2 paragraph summary of the article\'s key points.',
-            "  Do NOT weave in my comments -- summarize the article itself only.",
-            "  My comments will appear separately in the post.",
-            '- "tags": An array of 1-5 lowercase tags categorizing the content',
-            '  (e.g., ["python", "web-development", "security"])',
-            '- "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing',
-            "",
-            "Respond with ONLY the JSON object, no markdown fences or other text.",
-        ]
-    )
+    prompt.extend(load_prompt_lines("user_prompt_with_url_tail.txt"))
     return "\n".join(prompt)
 
 
@@ -211,18 +211,7 @@ def build_user_prompt_no_url(body_text: str, issue_title: Optional[str]) -> str:
     if issue_title and is_meaningful_title(issue_title):
         prompt.append(f"Suggested title: {issue_title}")
         prompt.append("")
-    prompt.extend(
-        [
-            "Please respond with a JSON object containing:",
-            '- "title": A concise, descriptive title for the blog post (do NOT prefix with "TIL:")',
-            '- "slug": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)',
-            '- "tags": An array of 1-5 lowercase tags categorizing the content',
-            '- "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing',
-            "",
-            'Do NOT include a "summary" field -- I will use my notes directly as the post body.',
-            "Respond with ONLY the JSON object, no markdown fences or other text.",
-        ]
-    )
+    prompt.extend(load_prompt_lines("user_prompt_no_url_tail.txt"))
     return "\n".join(prompt)
 
 
@@ -282,13 +271,7 @@ def main() -> None:
         )
         return
 
-    system_prompt = (
-        "You are a helpful assistant that creates blog post metadata and summaries. "
-        "When summarizing articles, produce a standalone summary of the article's "
-        "key points -- do NOT incorporate the user's personal comments into the summary. "
-        "The user's comments will be displayed separately around the summary. "
-        "You always respond with valid JSON and nothing else."
-    )
+    system_prompt = load_prompt_text("system_prompt.txt").strip()
 
     llm_data: Dict[str, Any]
     post_body: str

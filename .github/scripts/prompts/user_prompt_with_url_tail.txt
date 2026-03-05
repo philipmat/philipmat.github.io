@@ -1,0 +1,11 @@
+Please respond with a JSON object containing:
+- "title": A concise, descriptive title for the blog post (do NOT prefix with "TIL:")
+- "slug": A URL-friendly slug (lowercase, hyphens only, no special characters, max 60 chars)
+- "summary": A 1-2 paragraph summary of the article's key points.
+  Do NOT weave in my comments -- summarize the article itself only.
+  My comments will appear separately in the post.
+- "tags": An array of 1-5 lowercase tags categorizing the content
+  (e.g., ["python", "web-development", "security"])
+- "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing
+
+Respond with ONLY the JSON object, no markdown fences or other text.
