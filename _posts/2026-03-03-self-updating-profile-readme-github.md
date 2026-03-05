@@ -2,7 +2,6 @@
 layout: post
 title: "TIL: Building a self-updating profile README for GitHub"
 tags: [til, github, automation, python, graphql, github-actions]
-categories: [TIL, Github, Automation, Python, Graphql, Github Actions]
 snippet: "Learn how to create a self-updating GitHub profile README using GitHub Actions and a Python script."
 source_url: https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/
 ---
@@ -19,4 +18,4 @@ source_url: https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/
 
 Source: [Building a self-updating profile README for GitHub](https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/)
 
-*Categories: TIL, Github, Automation, Python, Graphql, Github Actions*
+*Tags: til, github, automation, python, graphql, github-actions*

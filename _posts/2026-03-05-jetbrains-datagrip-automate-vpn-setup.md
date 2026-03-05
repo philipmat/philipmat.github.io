@@ -2,7 +2,6 @@
 layout: post
 title: "TIL: Jetbrains DataGrip -- Automatically start VPN connection"
 tags: [til, azure, vpn, datagrip, macos, database]
-categories: [TIL, Azure, VPN, Datagrip, macOS, Database]
 snippet: "Learn how to automate VPN connections in DataGrip for Azure-hosted databases on macOS."
 ---
 
@@ -41,4 +40,4 @@ Screenshots below.
 ![DataGrip - VPN setup - Select External Tool](/media/images/datagrip-vpn-3.png)  
 ![DataGrip - VPN setup step - Before Connection + Existing Tool](/media/images/datagrip-vpn-4.png)
 
-*Categories: TIL, Azure, Vpn, Datagrip, Macos, Database*
+*Tags: til, azure, vpn, datagrip, macos, database*
