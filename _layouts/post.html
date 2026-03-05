@@ -17,9 +17,12 @@ layout: base
 		{{ content }}
 	</div>
 
+	{% if page.tags and page.tags.size > 0 %}
+	<div class="tags">Tags: {{ page.tags | join: ", " }}</div>
+	{% endif %}
+
 	<footer class="feedback">
 		So? Liked it? Hated it? Thought it was stupid? Thought <strong>I</strong> was stupid? Deemed it to be informative? Want to lavish excessive praise or cast fiery insults?  <a href="/contact.html">Contact me</a> and have at it.
 	</footer>
 
 </article>
-
