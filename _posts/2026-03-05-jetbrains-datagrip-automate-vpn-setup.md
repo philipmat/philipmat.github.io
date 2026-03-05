@@ -2,7 +2,7 @@
 layout: post
 title: "TIL: Jetbrains DataGrip -- Automatically start VPN connection"
 tags: [til, azure, vpn, datagrip, macos, database]
-categories: [TIL, Azure, Vpn, Datagrip, Macos, Database]
+categories: [TIL, Azure, VPN, Datagrip, macOS, Database]
 snippet: "Learn how to automate VPN connections in DataGrip for Azure-hosted databases on macOS."
 ---
 
@@ -31,8 +31,14 @@ Steps are as following:
 
 **Note**: 
 * executing the first query fast enough, before giving the tunnel a chance to fully connect,  might fail with a "Cannot find server" or something similar; retrying works pretty reliably.
+* for other connections to the same server, just select the existing tool.
 * `scutil --nc stop prod-shared-vnet` disconnects the VPN tunnel. It seems to also drop when the computer goes to sleep.
 
 Screenshots below.
+
+![DataGrip - VPN setup step - Before Connection + Add New Configuration](/media/images/datagrip-vpn-1.png)  
+![DataGrip - VPN setup - Create External Tool](/media/images/datagrip-vpn-2.png)  
+![DataGrip - VPN setup - Select External Tool](/media/images/datagrip-vpn-3.png)  
+![DataGrip - VPN setup step - Before Connection + Existing Tool](/media/images/datagrip-vpn-4.png)
 
 *Categories: TIL, Azure, Vpn, Datagrip, Macos, Database*

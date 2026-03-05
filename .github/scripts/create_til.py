@@ -12,7 +12,7 @@ GITHUB_API = "https://api.github.com"
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
-KNOWN_ACRONYMS = {"til", "ai", "llm", "api", "sql", "url", "html", "css", "js", "cli"}
+KNOWN_ACRONYMS = {"til", "ai", "llm", "api", "sql", "url", "html", "css", "js", "cli", "vpn"}
 
 
 def get_env(name: str, required: bool = True) -> Optional[str]:
