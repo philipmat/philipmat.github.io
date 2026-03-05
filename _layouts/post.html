@@ -18,7 +18,12 @@ layout: base
 	</div>
 
 	{% if page.tags and page.tags.size > 0 %}
-	<div class="tags">Tags: {{ page.tags | join: ", " }}</div>
+	<div class="tags">
+		Tags:
+		{% for tag in page.tags %}
+			<a href="/categories.html#{{ tag | slugify }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
+		{% endfor %}
+	</div>
 	{% endif %}
 
 	<footer class="feedback">
