@@ -15,5 +15,3 @@ source_url: https://vcrpy.readthedocs.io/en/latest/
 [scotch](https://github.com/mleech/scotch) and [Betamax.NET](https://github.com/mfloryan/Betamax.Net) are the VCR.py .NET alternatives, neither of which have been updated in a few years.
 
 Source: [VCR.py -- records and replays HTTP calls for testing](https://vcrpy.readthedocs.io/en/latest/)
-
-*Tags: til, python, testing, http, development*

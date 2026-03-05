@@ -39,5 +39,3 @@ Screenshots below.
 ![DataGrip - VPN setup - Create External Tool](/media/images/datagrip-vpn-2.png)  
 ![DataGrip - VPN setup - Select External Tool](/media/images/datagrip-vpn-3.png)  
 ![DataGrip - VPN setup step - Before Connection + Existing Tool](/media/images/datagrip-vpn-4.png)
-
-*Tags: til, azure, vpn, datagrip, macos, database*

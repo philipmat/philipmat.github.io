@@ -17,5 +17,3 @@ source_url: https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/
 > Bonus: automate update with GH Actions
 
 Source: [Building a self-updating profile README for GitHub](https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/)
-
-*Tags: til, github, automation, python, graphql, github-actions*
