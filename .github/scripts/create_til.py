@@ -12,7 +12,6 @@ GITHUB_API = "https://api.github.com"
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
-KNOWN_ACRONYMS = {"til", "ai", "llm", "api", "sql", "url", "html", "css", "js", "cli"}
 
 
 def get_env(name: str, required: bool = True) -> Optional[str]:
@@ -112,20 +111,6 @@ def ensure_snippet(snippet: str, fallback_text: str) -> str:
 
 def yaml_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace('"', '\\"')
-
-
-def format_category_word(word: str) -> str:
-    """Title-case a word, or uppercase it if it's a known acronym."""
-    return word.upper() if word.lower() in KNOWN_ACRONYMS else word.title()
-
-
-def tag_to_category(tag: str) -> str:
-    """Convert a lowercase hyphenated tag to a display category name."""
-    return " ".join(format_category_word(word) for word in tag.split("-"))
-
-
-def tags_to_categories(tags: List[str]) -> List[str]:
-    return [tag_to_category(tag) for tag in tags]
 
 
 def parse_llm_json(raw_text: str) -> Dict[str, Any]:
@@ -382,8 +367,6 @@ def main() -> None:
         title = collapse_spaces(str(llm_data.get("title") or "Untitled")).strip()
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
     tags = normalize_tags(llm_data.get("tags"))
-    categories = tags_to_categories(tags)
-
     summary_text = llm_data.get("summary") if used_article else ""
     snippet_source = summary_text or post_body
     snippet = ensure_snippet(str(llm_data.get("snippet") or ""), snippet_source)
@@ -398,21 +381,17 @@ def main() -> None:
         file_path = os.path.join(posts_dir, filename)
 
     tag_list = ", ".join(tags)
-    category_yaml_list = ", ".join(categories)
-
     front_matter_lines = [
         "---",
         f"layout: post",
         f'title: "TIL: {yaml_escape(title)}"',
         f"tags: [{tag_list}]",
-        f"categories: [{category_yaml_list}]",
         f'snippet: "{yaml_escape(snippet)}"',
     ]
     if url:
         front_matter_lines.append(f"source_url: {url}")
     front_matter_lines.append("---")
 
-    post_body = post_body.rstrip() + f"\n\n*Categories: {', '.join(categories)}*"
     content = "\n".join(front_matter_lines) + "\n\n" + post_body.strip() + "\n"
     with open(file_path, "w", encoding="utf-8") as handle:
         handle.write(content)
