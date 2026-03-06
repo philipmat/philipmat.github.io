@@ -4,6 +4,7 @@ import re
 import subprocess
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urlparse
 
 import requests
 import trafilatura
@@ -13,6 +14,12 @@ OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
 PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
+IMAGE_PLACEHOLDER_RE = re.compile(r"\[\[IMAGE_\d+\]\]")
+
+MD_IMAGE_RE = re.compile(
+    r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", re.IGNORECASE
+)
+HTML_IMAGE_RE = re.compile(r"<img\b[^>]*>", re.IGNORECASE)
 
 
 def load_prompt_text(filename: str) -> str:
@@ -26,6 +33,7 @@ def load_prompt_text(filename: str) -> str:
 
 def load_prompt_lines(filename: str) -> List[str]:
     return load_prompt_text(filename).splitlines()
+
 
 def get_env(name: str, required: bool = True) -> Optional[str]:
     value = os.getenv(name)
@@ -110,6 +118,52 @@ def normalize_tags(tags: Any) -> List[str]:
 
 def collapse_spaces(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
+
+
+def extract_images(body: str) -> Tuple[str, List[Dict[str, str]]]:
+    matches: List[Dict[str, str]] = []
+
+    for match in MD_IMAGE_RE.finditer(body):
+        matches.append(
+            {
+                "start": match.start(),
+                "end": match.end(),
+                "url": match.group(2).strip(),
+                "alt": match.group(1).strip(),
+            }
+        )
+
+    for match in HTML_IMAGE_RE.finditer(body):
+        tag = match.group(0)
+        src_match = re.search(r"\bsrc=(['\"])(.*?)\1", tag, re.IGNORECASE)
+        if not src_match:
+            continue
+        alt_match = re.search(r"\balt=(['\"])(.*?)\1", tag, re.IGNORECASE)
+        matches.append(
+            {
+                "start": match.start(),
+                "end": match.end(),
+                "url": src_match.group(2).strip(),
+                "alt": alt_match.group(2).strip() if alt_match else "",
+            }
+        )
+
+    if not matches:
+        return body, []
+
+    matches.sort(key=lambda item: item["start"])
+    updated = body
+    for idx, match in enumerate(matches, start=1):
+        match["placeholder"] = f"[[IMAGE_{idx}]]"
+
+    for match in sorted(matches, key=lambda item: item["start"], reverse=True):
+        updated = updated[: match["start"]] + match["placeholder"] + updated[match["end"] :]
+
+    return updated, matches
+
+
+def strip_image_placeholders(text: str) -> str:
+    return IMAGE_PLACEHOLDER_RE.sub("", text).strip()
 
 
 def ensure_snippet(snippet: str, fallback_text: str) -> str:
@@ -231,6 +285,66 @@ def make_summary_blockquote(summary: str) -> str:
     return f"> **Summary**\n>\n{quoted}"
 
 
+def guess_image_extension(url: str, content_type: Optional[str]) -> str:
+    if content_type:
+        mime = content_type.split(";", 1)[0].strip().lower()
+        mapping = {
+            "image/png": ".png",
+            "image/jpeg": ".jpg",
+            "image/jpg": ".jpg",
+            "image/gif": ".gif",
+            "image/webp": ".webp",
+            "image/svg+xml": ".svg",
+        }
+        if mime in mapping:
+            return mapping[mime]
+        if mime.startswith("image/"):
+            suffix = mime.split("/", 1)[1].split("+", 1)[0]
+            if suffix:
+                return f".{suffix}"
+
+    parsed = urlparse(url)
+    ext = os.path.splitext(parsed.path)[1].lower()
+    if ext in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}:
+        return ".jpg" if ext == ".jpeg" else ext
+    return ".png"
+
+
+def insert_images_into_body(
+    post_body: str, images: List[Dict[str, str]], filename: str
+) -> Tuple[str, List[str], List[str]]:
+    if not images:
+        return post_body, [], []
+
+    images_dir = os.path.join("media", "images")
+    os.makedirs(images_dir, exist_ok=True)
+    base_stem = os.path.splitext(filename)[0]
+    saved_paths: List[str] = []
+    failures: List[str] = []
+
+    for idx, image in enumerate(images, start=1):
+        url = image["url"]
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+        except requests.RequestException as exc:
+            failures.append(f"{image['placeholder']} -> {url} ({exc})")
+            continue
+
+        extension = guess_image_extension(url, response.headers.get("Content-Type"))
+        image_name = f"{base_stem}-{idx}{extension}"
+        image_path = os.path.join(images_dir, image_name)
+        with open(image_path, "wb") as handle:
+            handle.write(response.content)
+        saved_paths.append(image_path)
+
+        alt_text = collapse_spaces(image.get("alt", "")) or "image"
+        markdown = f"![{alt_text}](/media/images/{image_name})"
+        post_body = post_body.replace(image["placeholder"], markdown)
+
+    return post_body, saved_paths, failures
+
+
 def main() -> None:
     github_token = get_env("GITHUB_TOKEN")
     openrouter_api_key = get_env("OPENROUTER_API_KEY")
@@ -248,7 +362,9 @@ def main() -> None:
     )
     issue_user = issue.get("user", {}).get("login", "")
     issue_title = issue.get("title") or ""
-    issue_body = issue.get("body") or ""
+    raw_issue_body = issue.get("body") or ""
+    issue_body, images = extract_images(raw_issue_body)
+    issue_body_for_prompt = strip_image_placeholders(issue_body)
 
     if repo_owner_env and issue_user != repo_owner_env:
         print("Issue author is not repository owner. Exiting.")
@@ -260,6 +376,8 @@ def main() -> None:
         return
 
     url, comments_before, comments_after = split_body_around_url(issue_body)
+    comments_before_prompt = strip_image_placeholders(comments_before)
+    comments_after_prompt = strip_image_placeholders(comments_after)
 
     if not issue_body.strip():
         post_comment(
@@ -293,7 +411,7 @@ def main() -> None:
             used_article = True
             article_text = truncate_text(extracted)
             all_comments = "\n\n".join(
-                part for part in [comments_before, comments_after] if part
+                part for part in [comments_before_prompt, comments_after_prompt] if part
             )
             user_prompt = build_user_prompt_with_url(
                 article_text, all_comments, issue_title
@@ -322,7 +440,7 @@ def main() -> None:
             post_body = "\n".join(post_body_parts).strip()
         else:
             notes_text = issue_body.strip()
-            notes_for_prompt = notes_text or issue_title.strip()
+            notes_for_prompt = issue_body_for_prompt or issue_title.strip()
             user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
             llm_data = openrouter_request(
                 openrouter_api_key, system_prompt, user_prompt
@@ -339,7 +457,8 @@ def main() -> None:
                 "Could not create TIL: issue body is empty.",
             )
             return
-        user_prompt = build_user_prompt_no_url(notes_text, issue_title)
+        notes_for_prompt = issue_body_for_prompt or issue_title.strip()
+        user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
         llm_data = openrouter_request(openrouter_api_key, system_prompt, user_prompt)
         post_body = notes_text
 
@@ -349,10 +468,6 @@ def main() -> None:
         title = collapse_spaces(str(llm_data.get("title") or "Untitled")).strip()
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
     tags = normalize_tags(llm_data.get("tags"))
-    summary_text = llm_data.get("summary") if used_article else ""
-    snippet_source = summary_text or post_body
-    snippet = ensure_snippet(str(llm_data.get("snippet") or ""), snippet_source)
-
     date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     filename = f"{date_str}-{slug}.md"
     posts_dir = "_posts"
@@ -361,6 +476,14 @@ def main() -> None:
     if os.path.exists(file_path):
         filename = f"{date_str}-{slug}-{issue_number}.md"
         file_path = os.path.join(posts_dir, filename)
+
+    post_body, image_paths, image_failures = insert_images_into_body(
+        post_body, images, filename
+    )
+
+    summary_text = llm_data.get("summary") if used_article else ""
+    snippet_source = summary_text or post_body
+    snippet = ensure_snippet(str(llm_data.get("snippet") or ""), snippet_source)
 
     tag_list = ", ".join(tags)
     front_matter_lines = [
@@ -390,18 +513,20 @@ def main() -> None:
     )
 
     run_git(["checkout", "-b", branch_name])
-    run_git(["add", file_path])
+    run_git(["add", file_path, *image_paths])
     run_git(["commit", "-m", f"Add TIL: {title}"])
     run_git(["push", "-u", "origin", branch_name])
 
     repo_info = request_json("GET", f"{GITHUB_API}/repos/{owner}/{repo}", github_token)
     base_branch = repo_info.get("default_branch", "main")
 
-    pr_body_lines = [
-        f"Closes #{issue_number}.",
-    ]
+    pr_body_lines = [f"Closes #{issue_number}."]
     if url:
         pr_body_lines.append(f"Source: {url}")
+    if image_failures:
+        pr_body_lines.append("")
+        pr_body_lines.append("Image download failures (placeholders left in post):")
+        pr_body_lines.extend(f"- {failure}" for failure in image_failures)
     pr_body = "\n".join(pr_body_lines)
 
     pr_payload = {
