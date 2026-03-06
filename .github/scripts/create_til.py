@@ -11,6 +11,7 @@ import trafilatura
 
 GITHUB_API = "https://api.github.com"
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
+DEFAULT_OPENROUTER_MODEL = "openai/gpt-4o"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
 PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
@@ -193,7 +194,7 @@ def parse_llm_json(raw_text: str) -> Dict[str, Any]:
 
 
 def openrouter_request(
-    api_key: str, system_prompt: str, user_prompt: str
+    api_key: str, system_prompt: str, user_prompt: str, model: str
 ) -> Dict[str, Any]:
     response = requests.post(
         OPENROUTER_API,
@@ -202,7 +203,7 @@ def openrouter_request(
             "Content-Type": "application/json",
         },
         json={
-            "model": "openai/gpt-4o",
+            "model": model,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -348,6 +349,13 @@ def insert_images_into_body(
 def main() -> None:
     github_token = get_env("GITHUB_TOKEN")
     openrouter_api_key = get_env("OPENROUTER_API_KEY")
+    openrouter_model = get_env("OPENROUTER_MODEL", required=False) or DEFAULT_OPENROUTER_MODEL
+    openrouter_summary_model = (
+        get_env("OPENROUTER_SUMMARY_MODEL", required=False) or openrouter_model
+    )
+    openrouter_post_model = (
+        get_env("OPENROUTER_POST_MODEL", required=False) or openrouter_model
+    )
     issue_number = int(get_env("ISSUE_NUMBER"))
     repository = get_env("GITHUB_REPOSITORY")
     repo_owner_env = get_env("REPO_OWNER", required=False)
@@ -417,7 +425,10 @@ def main() -> None:
                 article_text, all_comments, issue_title
             )
             llm_data = openrouter_request(
-                openrouter_api_key, system_prompt, user_prompt
+                openrouter_api_key,
+                system_prompt,
+                user_prompt,
+                openrouter_summary_model,
             )
             summary = (llm_data.get("summary") or "").strip()
             if not summary:
@@ -443,7 +454,10 @@ def main() -> None:
             notes_for_prompt = issue_body_for_prompt or issue_title.strip()
             user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
             llm_data = openrouter_request(
-                openrouter_api_key, system_prompt, user_prompt
+                openrouter_api_key,
+                system_prompt,
+                user_prompt,
+                openrouter_post_model,
             )
             post_body = notes_text
     else:
@@ -459,7 +473,12 @@ def main() -> None:
             return
         notes_for_prompt = issue_body_for_prompt or issue_title.strip()
         user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
-        llm_data = openrouter_request(openrouter_api_key, system_prompt, user_prompt)
+        llm_data = openrouter_request(
+            openrouter_api_key,
+            system_prompt,
+            user_prompt,
+            openrouter_post_model,
+        )
         post_body = notes_text
 
     if is_meaningful_title(issue_title):
