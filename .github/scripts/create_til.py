@@ -11,7 +11,12 @@ import trafilatura
 
 GITHUB_API = "https://api.github.com"
 OPENROUTER_API = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_OPENROUTER_MODEL = "openai/gpt-4o"
+# other options:
+# - openrouter/auto -- automatically selects the model
+# - ?
+# See https://gist.github.com/philipmat/bb8d3b7a6269191e693b8930044094d9
+#   for experiments in summarizing.
+DEFAULT_OPENROUTER_MODEL = "openai/gpt-5-mini"
 
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
 PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
