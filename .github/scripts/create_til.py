@@ -130,6 +130,17 @@ def collapse_spaces(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def has_til_prefix(title: str) -> bool:
+    return collapse_spaces(title).lower().startswith("til: ")
+
+
+def format_til_title(title: str, add_prefix: bool) -> str:
+    normalized = collapse_spaces(title)
+    if add_prefix and normalized and not has_til_prefix(normalized):
+        return f"TIL: {normalized}"
+    return normalized
+
+
 def extract_images(body: str) -> Tuple[str, List[Dict[str, str]]]:
     matches: List[Dict[str, str]] = []
 
@@ -387,9 +398,9 @@ def main() -> None:
         print("Issue author is not repository owner. Exiting.")
         return
 
-    issue_labels = [label.get("name", "") for label in issue.get("labels", [])]
-    if "enhancement" in issue_labels:
-        print("Issue is labeled 'enhancement'. Skipping TIL creation.")
+    issue_labels = [str(label.get("name", "")).lower() for label in issue.get("labels", [])]
+    if "enhancement" in issue_labels or "bug" in issue_labels:
+        print("Issue is labeled 'enhancement' or 'bug'. Skipping TIL creation.")
         return
 
     url, comments_before, comments_after = split_body_around_url(issue_body)
@@ -494,6 +505,7 @@ def main() -> None:
         title = collapse_spaces(issue_title).strip()
     else:
         title = collapse_spaces(str(llm_data.get("title") or "Untitled")).strip()
+    display_title = format_til_title(title, add_prefix=used_article)
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
     tags = normalize_tags(llm_data.get("tags"))
     date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -517,7 +529,7 @@ def main() -> None:
     front_matter_lines = [
         "---",
         f"layout: post",
-        f'title: "TIL: {yaml_escape(title)}"',
+        f'title: "{yaml_escape(display_title)}"',
         f"tags: [{tag_list}]",
         f'snippet: "{yaml_escape(snippet)}"',
     ]
@@ -542,7 +554,7 @@ def main() -> None:
 
     run_git(["checkout", "-b", branch_name])
     run_git(["add", file_path, *image_paths])
-    run_git(["commit", "-m", f"Add TIL: {title}"])
+    run_git(["commit", "-m", f"Add {display_title}"])
     run_git(["push", "-u", "origin", branch_name])
 
     repo_info = request_json("GET", f"{GITHUB_API}/repos/{owner}/{repo}", github_token)
@@ -558,7 +570,7 @@ def main() -> None:
     pr_body = "\n".join(pr_body_lines)
 
     pr_payload = {
-        "title": f"TIL: {title}",
+        "title": display_title,
         "head": branch_name,
         "base": base_branch,
         "body": pr_body,
