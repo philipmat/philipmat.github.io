@@ -21,6 +21,7 @@ DEFAULT_OPENROUTER_MODEL = "openai/gpt-5-mini"
 TRAILING_URL_PUNCT = ")].,!?:;\"'"
 PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
 IMAGE_PLACEHOLDER_RE = re.compile(r"\[\[IMAGE_\d+\]\]")
+STANDALONE_URL_RE = re.compile(r"(?m)^(https?://\S+)\s*$")
 
 MD_IMAGE_RE = re.compile(
     r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", re.IGNORECASE
@@ -75,15 +76,18 @@ def post_comment(
 def split_body_around_url(text: str) -> Tuple[Optional[str], str, str]:
     """Split issue body into (url, text_before_url, text_after_url).
 
-    Returns (None, full_text, "") if no URL is found.
+    Only treats a URL as the article source when it is on its own line and
+    starts at the beginning of that line.
+
+    Returns (None, full_text, "") if no standalone URL line is found.
     """
-    match = re.search(r"https?://\S+", text)
+    match = STANDALONE_URL_RE.search(text)
     if not match:
         return None, text.strip(), ""
-    raw = match.group(0)
+    raw = match.group(1)
     cleaned = raw.rstrip(TRAILING_URL_PUNCT)
     before = text[: match.start()].strip()
-    after = text[match.start() + len(raw) :].strip()
+    after = text[match.end() :].strip()
     return cleaned, before, after
 
 
