@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "TIL: How long will my Mac’s SSD last? About 3000 erase-write cycles"
-tags: [til, ssd, mac, storage, smartmontools]
+title: "How long will my Mac’s SSD last? About 3000 erase-write cycles"
+tags: [ssd, mac, storage, smartmontools]
 snippet: "Modern Mac SSDs typically endure about 3,000 erase-write cycles; monitor total data written with iostat or smartctl, keep 10–25% free, and avoid VM swap to extend lifespan."
 ---
 
