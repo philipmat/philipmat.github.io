@@ -109,21 +109,27 @@ def sanitize_slug(raw_slug: str, fallback: str) -> str:
     return slug
 
 
-def normalize_tags(tags: Any) -> List[str]:
-    if not isinstance(tags, list):
-        return ["til"]
+def normalize_tag(tag: str) -> str:
+    return re.sub(r"[^a-z0-9-]+", "-", tag.lower()).strip("-")
+
+
+def normalize_tags(tags: Any, extra_tags: Optional[List[str]] = None) -> List[str]:
+    combined: List[str] = []
+    if extra_tags:
+        combined.extend(extra_tags)
+    if isinstance(tags, list):
+        combined.extend(tag for tag in tags if isinstance(tag, str))
+
     cleaned: List[str] = []
-    for tag in tags:
-        if not isinstance(tag, str):
+    for tag in combined:
+        normalized = normalize_tag(tag)
+        if not normalized or normalized == "til" or normalized in cleaned:
             continue
-        normalized = re.sub(r"[^a-z0-9-]+", "-", tag.lower()).strip("-")
-        if normalized:
-            cleaned.append(normalized)
-        if len(cleaned) >= 5:
+        cleaned.append(normalized)
+        if len(cleaned) >= 4:
             break
-    if "til" not in cleaned:
-        cleaned.insert(0, "til")
-    return cleaned or ["til"]
+
+    return ["til", *cleaned]
 
 
 def collapse_spaces(text: str) -> str:
@@ -139,6 +145,25 @@ def format_til_title(title: str, add_prefix: bool) -> str:
     if add_prefix and normalized and not has_til_prefix(normalized):
         return f"TIL: {normalized}"
     return normalized
+
+
+def extract_trailing_tags_line(text: str) -> Tuple[str, List[str]]:
+    lines = text.splitlines()
+    end = len(lines)
+    while end > 0 and not lines[end - 1].strip():
+        end -= 1
+    if end == 0:
+        return text, []
+
+    match = re.match(r"(?i)^tags:\s*(.+?)\s*$", lines[end - 1].strip())
+    if not match:
+        return text, []
+
+    tag_values = [part.strip() for part in match.group(1).split(",")]
+    body_lines = lines[: end - 1]
+    while body_lines and not body_lines[-1].strip():
+        body_lines.pop()
+    return "\n".join(body_lines), [tag for tag in tag_values if tag]
 
 
 def extract_images(body: str) -> Tuple[str, List[Dict[str, str]]]:
@@ -392,6 +417,7 @@ def main() -> None:
     issue_title = issue.get("title") or ""
     raw_issue_body = issue.get("body") or ""
     issue_body, images = extract_images(raw_issue_body)
+    issue_body, footer_tags = extract_trailing_tags_line(issue_body)
     issue_body_for_prompt = strip_image_placeholders(issue_body)
 
     if repo_owner_env and issue_user != repo_owner_env:
@@ -507,7 +533,7 @@ def main() -> None:
         title = collapse_spaces(str(llm_data.get("title") or "Untitled")).strip()
     display_title = format_til_title(title, add_prefix=used_article)
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
-    tags = normalize_tags(llm_data.get("tags"))
+    tags = normalize_tags(llm_data.get("tags"), extra_tags=footer_tags)
     date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     filename = f"{date_str}-{slug}.md"
     posts_dir = "_posts"
