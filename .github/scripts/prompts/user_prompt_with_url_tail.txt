@@ -4,7 +4,9 @@ Please respond with a JSON object containing:
 - "summary": A 1-2 paragraph summary of the article's key points.
   Do NOT weave in my comments -- summarize the article itself only.
   My comments will appear separately in the post.
-- "tags": An array of 1-5 lowercase tags categorizing the content
+- "tags": An array of 1-5 lowercase tags categorizing the content.
+  Prefer reusing tags from the existing tag list provided below whenever they are
+  applicable; only introduce new tags when none of the existing ones fit.
   (e.g., ["python", "web-development", "security"])
 - "snippet": A single sentence (max 200 chars) summarizing the post for an archive listing
 

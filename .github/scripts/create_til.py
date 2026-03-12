@@ -23,9 +23,7 @@ PROMPT_DIR = os.path.join(os.path.dirname(__file__), "prompts")
 IMAGE_PLACEHOLDER_RE = re.compile(r"\[\[IMAGE_\d+\]\]")
 STANDALONE_URL_RE = re.compile(r"(?m)^(https?://\S+)\s*$")
 
-MD_IMAGE_RE = re.compile(
-    r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", re.IGNORECASE
-)
+MD_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", re.IGNORECASE)
 HTML_IMAGE_RE = re.compile(r"<img\b[^>]*>", re.IGNORECASE)
 
 
@@ -109,26 +107,64 @@ def sanitize_slug(raw_slug: str, fallback: str) -> str:
     return slug
 
 
+def collect_existing_tags(posts_dir: str = "_posts") -> List[str]:
+    """Return a sorted, deduplicated list of tags already used across all posts."""
+    tag_pattern = re.compile(r"^tags:\s*\[([^\]]*)\]", re.MULTILINE)
+    seen: Dict[str, bool] = {}
+    if not os.path.isdir(posts_dir):
+        return []
+    for fname in os.listdir(posts_dir):
+        if not fname.endswith(".md") and not fname.endswith(".markdown"):
+            continue
+        fpath = os.path.join(posts_dir, fname)
+        try:
+            with open(fpath, "r", encoding="utf-8") as fh:
+                content = fh.read(4096)  # front matter is always near the top
+        except OSError:
+            continue
+        match = tag_pattern.search(content)
+        if not match:
+            continue
+        for raw in match.group(1).split(","):
+            t = normalize_tag(raw.strip())
+            if t and t != "til":
+                seen[t] = True
+    return sorted(seen.keys())
+
+
 def normalize_tag(tag: str) -> str:
     return re.sub(r"[^a-z0-9-]+", "-", tag.lower()).strip("-")
 
 
-def normalize_tags(tags: Any, extra_tags: Optional[List[str]] = None) -> List[str]:
+def normalize_tags(
+    tags: Any,
+    extra_tags: Optional[List[str]] = None,
+    existing_tags: Optional[List[str]] = None,
+) -> List[str]:
     combined: List[str] = []
     if extra_tags:
         combined.extend(extra_tags)
     if isinstance(tags, list):
         combined.extend(tag for tag in tags if isinstance(tag, str))
 
-    cleaned: List[str] = []
+    existing_set = set(existing_tags or [])
+
+    # Normalise candidates and split into known (existing) vs new.
+    known: List[str] = []
+    novel: List[str] = []
+    seen: List[str] = []
     for tag in combined:
         normalized = normalize_tag(tag)
-        if not normalized or normalized == "til" or normalized in cleaned:
+        if not normalized or normalized == "til" or normalized in seen:
             continue
-        cleaned.append(normalized)
-        if len(cleaned) >= 4:
-            break
+        seen.append(normalized)
+        if normalized in existing_set:
+            known.append(normalized)
+        else:
+            novel.append(normalized)
 
+    # Existing tags fill slots first; new tags are appended only if room remains.
+    cleaned = (known + novel)[:4]
     return ["til", *cleaned]
 
 
@@ -203,7 +239,9 @@ def extract_images(body: str) -> Tuple[str, List[Dict[str, str]]]:
         match["placeholder"] = f"[[IMAGE_{idx}]]"
 
     for match in sorted(matches, key=lambda item: item["start"], reverse=True):
-        updated = updated[: match["start"]] + match["placeholder"] + updated[match["end"] :]
+        updated = (
+            updated[: match["start"]] + match["placeholder"] + updated[match["end"] :]
+        )
 
     return updated, matches
 
@@ -267,10 +305,23 @@ def openrouter_request(
     return parse_llm_json(content)
 
 
+def _existing_tags_section(existing_tags: Optional[List[str]]) -> List[str]:
+    """Return prompt lines listing existing tags, or an empty list if none."""
+    if not existing_tags:
+        return []
+    tag_str = ", ".join(existing_tags)
+    return [
+        "Existing tags (prefer these when applicable):",
+        tag_str,
+        "",
+    ]
+
+
 def build_user_prompt_with_url(
     article_text: str,
     comments: str,
     issue_title: Optional[str],
+    existing_tags: Optional[List[str]] = None,
 ) -> str:
     prompt = [
         'I want to create a short "Today I Learned" blog post based on the following article.',
@@ -294,11 +345,16 @@ def build_user_prompt_with_url(
     if issue_title and is_meaningful_title(issue_title):
         prompt.append(f"Suggested title: {issue_title}")
         prompt.append("")
+    prompt.extend(_existing_tags_section(existing_tags))
     prompt.extend(load_prompt_lines("user_prompt_with_url_tail.txt"))
     return "\n".join(prompt)
 
 
-def build_user_prompt_no_url(body_text: str, issue_title: Optional[str]) -> str:
+def build_user_prompt_no_url(
+    body_text: str,
+    issue_title: Optional[str],
+    existing_tags: Optional[List[str]] = None,
+) -> str:
     prompt = [
         'I want to create a short "Today I Learned" blog post from my notes below.',
         "",
@@ -311,6 +367,7 @@ def build_user_prompt_no_url(body_text: str, issue_title: Optional[str]) -> str:
     if issue_title and is_meaningful_title(issue_title):
         prompt.append(f"Suggested title: {issue_title}")
         prompt.append("")
+    prompt.extend(_existing_tags_section(existing_tags))
     prompt.extend(load_prompt_lines("user_prompt_no_url_tail.txt"))
     return "\n".join(prompt)
 
@@ -394,7 +451,9 @@ def insert_images_into_body(
 def main() -> None:
     github_token = get_env("GITHUB_TOKEN")
     openrouter_api_key = get_env("OPENROUTER_API_KEY")
-    openrouter_model = get_env("OPENROUTER_MODEL", required=False) or DEFAULT_OPENROUTER_MODEL
+    openrouter_model = (
+        get_env("OPENROUTER_MODEL", required=False) or DEFAULT_OPENROUTER_MODEL
+    )
     openrouter_summary_model = (
         get_env("OPENROUTER_SUMMARY_MODEL", required=False) or openrouter_model
     )
@@ -424,7 +483,9 @@ def main() -> None:
         print("Issue author is not repository owner. Exiting.")
         return
 
-    issue_labels = [str(label.get("name", "")).lower() for label in issue.get("labels", [])]
+    issue_labels = [
+        str(label.get("name", "")).lower() for label in issue.get("labels", [])
+    ]
     if "enhancement" in issue_labels or "bug" in issue_labels:
         print("Issue is labeled 'enhancement' or 'bug'. Skipping TIL creation.")
         return
@@ -444,6 +505,7 @@ def main() -> None:
         return
 
     system_prompt = load_prompt_text("system_prompt.txt").strip()
+    existing_tags = collect_existing_tags()
 
     llm_data: Dict[str, Any]
     post_body: str
@@ -468,7 +530,7 @@ def main() -> None:
                 part for part in [comments_before_prompt, comments_after_prompt] if part
             )
             user_prompt = build_user_prompt_with_url(
-                article_text, all_comments, issue_title
+                article_text, all_comments, issue_title, existing_tags=existing_tags
             )
             llm_data = openrouter_request(
                 openrouter_api_key,
@@ -498,7 +560,9 @@ def main() -> None:
         else:
             notes_text = issue_body.strip()
             notes_for_prompt = issue_body_for_prompt or issue_title.strip()
-            user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
+            user_prompt = build_user_prompt_no_url(
+                notes_for_prompt, issue_title, existing_tags=existing_tags
+            )
             llm_data = openrouter_request(
                 openrouter_api_key,
                 system_prompt,
@@ -518,7 +582,9 @@ def main() -> None:
             )
             return
         notes_for_prompt = issue_body_for_prompt or issue_title.strip()
-        user_prompt = build_user_prompt_no_url(notes_for_prompt, issue_title)
+        user_prompt = build_user_prompt_no_url(
+            notes_for_prompt, issue_title, existing_tags=existing_tags
+        )
         llm_data = openrouter_request(
             openrouter_api_key,
             system_prompt,
@@ -533,7 +599,9 @@ def main() -> None:
         title = collapse_spaces(str(llm_data.get("title") or "Untitled")).strip()
     display_title = format_til_title(title, add_prefix=used_article)
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
-    tags = normalize_tags(llm_data.get("tags"), extra_tags=footer_tags)
+    tags = normalize_tags(
+        llm_data.get("tags"), extra_tags=footer_tags, existing_tags=existing_tags
+    )
     date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     filename = f"{date_str}-{slug}.md"
     posts_dir = "_posts"
