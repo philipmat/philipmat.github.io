@@ -1,0 +1,45 @@
+name: Handle TIL Summary Review
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-summary:
+    # Only run when:
+    # 1. The review requests changes
+    # 2. The reviewer is the repo owner
+    # 3. The PR branch looks like a TIL branch
+    if: >-
+      github.event.review.state == 'changes_requested'
+      && github.event.review.user.login == github.repository_owner
+      && startsWith(github.event.pull_request.head.ref, 'til/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r .github/scripts/requirements.txt
+
+      - name: Update TIL summary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEW_ID: ${{ github.event.review.id }}
+        run: python .github/scripts/update_til_summary.py
