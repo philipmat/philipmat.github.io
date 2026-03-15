@@ -382,9 +382,11 @@ def run_git(args: List[str]) -> None:
     subprocess.run(["git", *args], check=True)
 
 
-def make_summary_blockquote(summary: str) -> str:
+def make_summary_blockquote(summary: str, url: Optional[str] = None) -> str:
     lines = summary.strip().split("\n")
     quoted = "\n".join(f"> {line}" if line.strip() else ">" for line in lines)
+    if url:
+        return f"> [**Summary**]({url})\n>\n{quoted}"
     return f"> **Summary**\n>\n{quoted}"
 
 
@@ -550,7 +552,7 @@ def main() -> None:
             if comments_before:
                 post_body_parts.append(comments_before)
                 post_body_parts.append("")
-            post_body_parts.append(make_summary_blockquote(summary))
+            post_body_parts.append(make_summary_blockquote(summary, url))
             post_body_parts.append("")
             if comments_after:
                 post_body_parts.append(comments_after)
