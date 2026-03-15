@@ -6,7 +6,7 @@ snippet: "A concise guide to Claude Code’s slash commands vs. skills, and prac
 source_url: https://batsov.com/articles/2026/03/11/essential-claude-code-skills-and-commands/
 ---
 
-> **Summary**
+> [**Summary**](https://batsov.com/articles/2026/03/11/essential-claude-code-skills-and-commands/)
 >
 > The article explains the difference between Claude Code’s built-in slash commands and its prompt-based skills: slash commands are fixed, non-AI operations (like /clear or /model), while skills load instruction files into Claude’s context and can spawn subagents, accept arguments, use tools, and include supporting files and frontmatter. The commands-and-skills systems have been unified under the /slash interface, with .claude/skills/ recommended for new customizations because it supports richer features (templates, dynamic context, subagents, and more).
 >
