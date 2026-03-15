@@ -17,7 +17,7 @@ The tool auto-detects the git root of the working directory, applies a deny-all 
 Same, but installed with `brew`. Then `nono run --profile claude-code -- claude` to run a sandboxed agent.
 
 
-Nono works on Linux as well, Agent Safehouse is macOS only. Nono is written in Rust, AS is all bash scripting.
+Nono works on Linux as well, Agent Safehouse is macOS only. Nono is written in Rust, AS is all fish-shell scripting.
 
 Founderland.ai [mentions a few other](https://www.founderland.ai/articles/agent-safehouse-brings-native-sandboxing-to-macos-ai-agents-mmiwmf3f#:~:text=Microsandbox,microVMs): 
 > Microsandbox and Agent Harbor lean on VM-level isolation. DevCage and AgentSphere target multi-platform or cloud deployments. Kilntainers gives each agent an ephemeral Linux sandbox via containers or microVMs.
