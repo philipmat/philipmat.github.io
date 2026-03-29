@@ -1,0 +1,38 @@
+name: Auto-merge on Approval
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    # Only run when the review is approved
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Auto-merge PR
+        run: |
+          pr_number="${{ github.event.pull_request.number }}"
+          echo "Attempting to auto-merge PR #$pr_number"
+          
+          # Check if PR is mergeable
+          mergeable=$(gh pr view "$pr_number" --json mergeStateStatus --jq '.mergeStateStatus')
+          echo "PR merge status: $mergeable"
+          
+          if [ "$mergeable" = "CLEAN" ] || [ "$mergeable" = "MERGEABLE" ]; then
+            gh pr merge "$pr_number" --merge --auto --delete-branch
+            echo "✅ PR #$pr_number auto-merged successfully"
+          else
+            echo "⚠️ PR #$pr_number is not in a clean state (status: $mergeable). Skipping auto-merge."
+            exit 0
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
