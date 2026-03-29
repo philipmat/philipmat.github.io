@@ -13,3 +13,5 @@ Saw this advice from multiple sources, most pointing to [@stroughtonsmith](https
 
 Firefox, for example, keeps icons for the _Bookmarks_ menu entries. Finder keeps the icons for the specific locations under the _Go_ menu.  
 iTerm2 doesn't seem to be observing this setting as of v3.6.9, but [a fix is in the works](https://gitlab.com/gnachman/iterm2/-/work_items/12780).
+
+As [Daring Fireball observes](https://daringfireball.net/2026/03/apple_giveth_apple_taketh_away), Safari needs 26.4 to observe this preference.
