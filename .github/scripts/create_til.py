@@ -386,7 +386,7 @@ def make_summary_blockquote(summary: str, url: Optional[str] = None) -> str:
     lines = summary.strip().split("\n")
     quoted = "\n".join(f"> {line}" if line.strip() else ">" for line in lines)
     if url:
-        return f"> [**Summary**]({url})\n>\n{quoted}"
+        return f"> [**AI Summary**]({url})\n>\n{quoted}"
     return f"> **Summary**\n>\n{quoted}"
 
 
