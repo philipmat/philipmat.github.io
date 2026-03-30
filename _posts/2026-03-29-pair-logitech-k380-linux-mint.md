@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "TIL: Pairing a Logitech K380 keyboard on Linux Mint"
-tags: [til, terminal, tools, github, open-source]
+tags: [til, bluetooth, linux mint, k380]
 snippet: "Pair a Logitech K380 on Linux Mint by using ValeriaRoyal's script or bluetoothctl — scan for the input-keyboard MAC, trust/pair it, and enter the displayed passkey."
 ---
 
