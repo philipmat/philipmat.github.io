@@ -141,31 +141,37 @@ def normalize_tags(
     extra_tags: Optional[List[str]] = None,
     existing_tags: Optional[List[str]] = None,
 ) -> List[str]:
-    combined: List[str] = []
-    if extra_tags:
-        combined.extend(extra_tags)
-    if isinstance(tags, list):
-        combined.extend(tag for tag in tags if isinstance(tag, str))
+    MAX_TAGS = 7  # including "til"
 
+    # Footer tags from the post are always included.
+    guaranteed: List[str] = []
+    seen: List[str] = []
+    for tag in (extra_tags or []):
+        normalized = normalize_tag(tag)
+        if normalized and normalized != "til" and normalized not in seen:
+            seen.append(normalized)
+            guaranteed.append(normalized)
+
+    # LLM tags fill remaining slots; prefer tags already used in the blog.
     existing_set = set(existing_tags or [])
-
-    # Normalise candidates and split into known (existing) vs new.
     known: List[str] = []
     novel: List[str] = []
-    seen: List[str] = []
-    for tag in combined:
-        normalized = normalize_tag(tag)
-        if not normalized or normalized == "til" or normalized in seen:
-            continue
-        seen.append(normalized)
-        if normalized in existing_set:
-            known.append(normalized)
-        else:
-            novel.append(normalized)
+    if isinstance(tags, list):
+        for tag in tags:
+            if not isinstance(tag, str):
+                continue
+            normalized = normalize_tag(tag)
+            if not normalized or normalized == "til" or normalized in seen:
+                continue
+            seen.append(normalized)
+            if normalized in existing_set:
+                known.append(normalized)
+            else:
+                novel.append(normalized)
 
-    # Existing tags fill slots first; new tags are appended only if room remains.
-    cleaned = (known + novel)[:4]
-    return ["til", *cleaned]
+    remaining = MAX_TAGS - 1 - len(guaranteed)  # slots after "til" and guaranteed
+    llm_fill = (known + novel)[:max(remaining, 0)]
+    return ["til", *guaranteed, *llm_fill]
 
 
 def collapse_spaces(text: str) -> str:
