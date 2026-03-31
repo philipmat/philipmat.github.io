@@ -1,11 +1,13 @@
 ---
 layout: post
 title: "TIL: Setting a minimum release age for packages"
-tags: [til, security, best-practices, python, macos]
+tags: [til, security, best-practices, npm, uv, pip]
 snippet: "Many package managers let you require a minimum package age before installing; examples for npm, pnpm, bun, Python uv, and pip (v26+) with a 7-day shortcut are shown."
 ---
 
-I [learned](https://news.ycombinator.com/item?id=47582632), in the light of the [axios compromise](https://www.stepsecurity.io/blog/axios-compromised-on-npm-malicious-versions-drop-remote-access-trojan) that a good deal of package managers support setting a minimum release age for packages:
+I [learned](https://news.ycombinator.com/item?id=47582632), 
+in the light of the [axios compromise](https://www.stepsecurity.io/blog/axios-compromised-on-npm-malicious-versions-drop-remote-access-trojan) 
+that a good deal of package managers support setting a minimum release age for packages:
 
 ```
 ~/.npmrc
@@ -32,3 +34,6 @@ Alas, `pip` only supports filtering by date, and _only in version v26.0_ and lat
 
 That is a bit annoying so a shortcut for the 7-day gating would be  
 `pip install --uploaded-prior-to=$(date -v-7d -u "+%Y-%m-%d") SomePackage`.
+
+There's also [pip-time-machine](https://f3dai.github.io/pip-time-machine/) which helps you
+find out version for packages before a certain date.
