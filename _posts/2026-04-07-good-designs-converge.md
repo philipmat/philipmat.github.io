@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Good designs converge"
-tags: [til, best-practices]
+tags: [til, watches, branding, design]
 snippet: "Paul Graham's 'The Brand Age' argues branding often opposes good design: design converges on practical, right answers, while branding favors distinctive, sometimes impractical choices that signal iden"
 ---
 
