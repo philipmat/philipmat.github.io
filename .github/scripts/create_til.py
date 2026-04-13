@@ -290,6 +290,9 @@ def openrouter_request(
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
+            "HTTP-Referer": "https://philipm.at",
+            "X-OpenRouter-Title": "blog-helper v1.0",
+            "X-OpenRouter-Categories": "writing-assistant,creative-writing",
         },
         json={
             "model": model,
