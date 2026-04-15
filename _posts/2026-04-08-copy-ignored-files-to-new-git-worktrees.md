@@ -46,11 +46,12 @@ Create a ~/.git_template` folder and add it to `~/.gitconfig`:
 [init]
   templateDir = ~/.git_template
 ```
-  `git init` in the repo of your choice.
+  Then run `git init` in the repo of your choice.
+
 2. Add support for multiple hooks:
-  1. `mkdir -p ~/.git_template/hooks/post-checkout.d`
-  2. Copy the `post-checkout` script from above to `~/.git_template/hooks/post-checkout.d/worktree-include`
-  3. Create `~/.git_template/hooks/post-checkout` with:  
+    1. `mkdir -p ~/.git_template/hooks/post-checkout.d`
+    2. Copy the `post-checkout` script from above to `~/.git_template/hooks/post-checkout.d/worktree-include`
+    3. Create `~/.git_template/hooks/post-checkout` with:  
 
 ```sh
 #!/usr/bin/env bash
@@ -81,7 +82,8 @@ fi
 
 exit 0
 ```
-  4. `chmod u+x ~/.git_template/hooks/post-checkout && chmod u+x ~/.git_template/hooks/post-checkout.d/*`
+
+   4. `chmod u+x ~/.git_template/hooks/post-checkout && chmod u+x ~/.git_template/hooks/post-checkout.d/*`
 
 Now you can run `git init` in any repo and it will create these scripts. I don't know what it does if you already have scripts like those in the local repo.
 
