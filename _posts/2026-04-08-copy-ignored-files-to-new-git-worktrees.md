@@ -11,7 +11,7 @@ But often we exclude in `.gitignore` files that are useful for development. For 
 
 Here's my solution involving post-checkout hook (`.git/hooks/post-checkout`) and a `.worktreeinclude` file:
 
-```
+```sh
 #!/usr/bin/env bash
 # Checking out a new worktree (that’s what the "$1" == "0000..." is all about)?
 if [[ "$1" == "0000000000000000000000000000000000000000" ]]; then
@@ -41,7 +41,7 @@ Tip: `fd "appsettings.*.local.json" -I |grep -viE "bin|obj" > .worktreeinclude` 
 
 1. Use git templates to have this file copied to all new repos. Also `git init` after template configuration re-initializes the repo.  
 Create a ~/.git_template` folder and add it to `~/.gitconfig`:  
-```
+```ini
 [init]
   templateDir = ~/.git_template
 ```
@@ -49,7 +49,8 @@ Create a ~/.git_template` folder and add it to `~/.gitconfig`:
 2. Add support for multiple hooks:
   1. `mkdir -p ~/.git_template/hooks/post-checkout.d`
   2. Copy the `post-checkout` script from above to `~/.git_template/hooks/post-checkout.d/worktree-include`
-  3. Create `~/.git_template/hooks/post-checkout` with:```
+  3. Create `~/.git_template/hooks/post-checkout` with:  
+```sh
 #!/usr/bin/env bash
 #
 # This script should be saved in a git repo as a hook file, e.g. .git/hooks/pre-receive.
