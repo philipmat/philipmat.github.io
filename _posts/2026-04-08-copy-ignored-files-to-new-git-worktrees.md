@@ -40,7 +40,8 @@ Tip: `fd "appsettings.*.local.json" -I |grep -viE "bin|obj" > .worktreeinclude` 
 ## Improvements
 
 1. Use git templates to have this file copied to all new repos. Also `git init` after template configuration re-initializes the repo.  
-Create a ~/.git_template` folder and add it to `~/.gitconfig`:  
+Create a ~/.git_template` folder and add it to `~/.gitconfig`:
+
 ```ini
 [init]
   templateDir = ~/.git_template
@@ -50,6 +51,7 @@ Create a ~/.git_template` folder and add it to `~/.gitconfig`:
   1. `mkdir -p ~/.git_template/hooks/post-checkout.d`
   2. Copy the `post-checkout` script from above to `~/.git_template/hooks/post-checkout.d/worktree-include`
   3. Create `~/.git_template/hooks/post-checkout` with:  
+
 ```sh
 #!/usr/bin/env bash
 #
