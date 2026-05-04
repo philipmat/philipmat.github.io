@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Paying for someone else to own a problem"
-tags: [til, pricing, development, design]
+title: Quote -- "Paying for someone else to own a problem"
+tags: [ai, pricing, development, design]
 snippet: "Paying for software buys problem ownership — the taste, context, operations and relationships needed to scale, maintain, and extend a solution, not just code or a feature."
 ---
 
