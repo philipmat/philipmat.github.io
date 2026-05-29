@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "TIL: \"output-competence decoupling\""
-tags: [til, ai, agentic-ai, automation, best-practices, tools]
+tags: [til, ai, ai-slop, workplace-dynamics, dunning-kruger]
 snippet: "Learned the term 'output-competence decoupling': AI lets novices produce expert-looking output without corresponding judgment, creating risks—verify model outputs and don't accept cheap agreement."
 ---
 
