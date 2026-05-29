@@ -15,7 +15,7 @@ The term for this new challenge, _"output-competence decoupling"_ comes from a p
 
 The essay contains veiled anecdotes that us, in the industry, have either already encountered, or will likely run against:
 
-- **Thinking tool=solution**:
+- **Thinking that tool=solution=success**:
 
 > [...] account directors and go-to-market leads who arrive with AI-generated projects and argue them. What they are proposing, in most cases, is a dashboard or website that displays the status of a process that is not ready to be automated, built to track a workflow that does not yet warrant tracking. The tool has not solved a problem; it has driven its user to identify a problem worth solving, outlined an architecture for the solution, and produced enough material — diagrams, schemas, interface mockups — that the user arrives in the room convinced the work is real. 
 
@@ -23,19 +23,19 @@ The essay contains veiled anecdotes that us, in the industry, have either alread
 
 > People who cannot write code are building software. People who have never designed a data system are designing data systems.
 
-These can seem like positive in absence of introspection. An maybe in a lot of cases that is good enough. When it's not:
+These can seem like positive in absence of introspection. And maybe in a lot of cases that is good enough. When it's not:
 
 > He could not, when asked, explain how any of it actually worked. The work was wrong from the first day. The schemas, and more importantly the objectives, were wrong in a way that would have been obvious to anyone with two years in the field.
 
 > The person, in the transaction, becomes a kind of conduit, capable of routing the output to a recipient and incapable of evaluating it on the way through.
 
-- **Doing the work is learning**. This bears echoes of Thomas Edison's observation that learning what not to build is as important as learning what to build; of "success teaches you little, failures teach a lot more".
+- **Performance is not learning**. Doing the work is learning. This bears echoes of Thomas Edison's observation that learning what not to build is as important as learning what to build; of "success teaches you little, failures teach a lot more".
 
 > The skills of producing work and judging it were deliberately distinct, but accomplishing the work itself used to teach the judgment.
 
 > The architectural critique that used to come from someone who was taught, or who had built and broken three of these before now comes from a model with no embodied memory of building or breaking anything. The slowness was not a tax on the real work; the slowness was the real work. It was how the work got good, and how the people producing the work got good.
 
-- **Volume wins** - a variation of frequency bias and scents of [Goodhart's Law](https://en.wikipedia.org/wiki/Goodhart%27s_law)
+- **Volume wins** - a variation of frequency bias and scents of [Goodhart's Law](https://en.wikipedia.org/wiki/Goodhart%27s_law). The paper linked above calls it "Verbosity as False Epistemic Authority".
 
 > Requirements documents that were once a page are now twelve. Status updates that were once three sentences are now bulleted summaries of bulleted summaries. Retrospective notes, post-incident reports, design memos, kickoff decks: every artifact that can be elongated is, by people who do not read what they produce, for readers who do not read what they receive.
 
@@ -45,6 +45,7 @@ In a world where we track metrics obsessively, and where volume is easier to mea
 
 I'm betting quite a few of us have encounter a situation where some person up- or side-the-chain drops a load of AI slop and walk away satisfied they have solved the problem _and_ did most of the work too.
 
+---
 I like one of his recommendations at the end because it's simple and simple rules are easy to follow.
 
 > Use the tool where you can verify precisely what it produces. Never ask a model for confirmation; the tool agrees with everyone, and an agreement that costs the agreer nothing is worth nothing.
