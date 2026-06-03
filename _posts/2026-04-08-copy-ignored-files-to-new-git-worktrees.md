@@ -96,9 +96,14 @@ HEAD is now at XXXXXXXX Merge pull request #612 from XXXXXXXX
 Running post-checkout//Users/philip/Projects/Service.Repo/.git/hooks/post-checkout.d/worktree-include hook
 Copied Service.API/appsettings.local.json
 Copied Service.Listener/appsettings.local.json
-Copied Core.Service.Test.Integration/appsettings-test.local.json
+Copied Service.Test.Integration/appsettings-test.local.json
 Copied appsettings-cake.local.json
 ```
+
+As an aside, even without the hook setup,
+[Claude Code uses the `.worktreeinclude` file](https://code.claude.com/docs/en/worktrees#copy-gitignored-files-into-worktrees)
+to copy files when creating new worktrees for its work
+
 
 Thanks to the following posts:
 - [checking out a new tree](https://mskelton.dev/bytes/20230906143340)
