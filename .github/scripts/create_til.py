@@ -140,8 +140,9 @@ def normalize_tags(
     tags: Any,
     extra_tags: Optional[List[str]] = None,
     existing_tags: Optional[List[str]] = None,
+    is_til: bool = False,
 ) -> List[str]:
-    MAX_TAGS = 7  # including "til"
+    MAX_TAGS = 7
 
     # Footer tags from the post are always included.
     guaranteed: List[str] = []
@@ -169,9 +170,13 @@ def normalize_tags(
             else:
                 novel.append(normalized)
 
-    remaining = MAX_TAGS - 1 - len(guaranteed)  # slots after "til" and guaranteed
+    til_slot = 1 if is_til else 0
+    remaining = MAX_TAGS - til_slot - len(guaranteed)
     llm_fill = (known + novel)[:max(remaining, 0)]
-    return ["til", *guaranteed, *llm_fill]
+
+    if is_til:
+        return ["til", *guaranteed, *llm_fill]
+    return [*guaranteed, *llm_fill]
 
 
 def collapse_spaces(text: str) -> str:
@@ -611,7 +616,10 @@ def main() -> None:
     display_title = format_til_title(title, add_prefix=used_article)
     slug = sanitize_slug(str(llm_data.get("slug") or ""), title)
     tags = normalize_tags(
-        llm_data.get("tags"), extra_tags=footer_tags, existing_tags=existing_tags
+        llm_data.get("tags"),
+        extra_tags=footer_tags,
+        existing_tags=existing_tags,
+        is_til=used_article,
     )
     date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     filename = f"{date_str}-{slug}.md"
