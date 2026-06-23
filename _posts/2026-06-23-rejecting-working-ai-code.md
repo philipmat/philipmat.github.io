@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Rejecting working AI code"
-tags: [til, ai, code-review, best-practices, workplace-dynamics]
+tags: [ai, code-review, best-practices, workplace-dynamics]
 snippet: "Practical rules for rejecting AI-generated code: don't accept code you can't explain, that adds unnecessary abstractions, bloats diffs, makes reasoning harder, or trusts output over understanding."
 ---
 
