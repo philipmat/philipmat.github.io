@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "TIL: Fixing no video playing in Firefox on Linux Mint -- broken ring buffer"
-tags: [linux-mint, terminal, tools]
+tags: [til, linux-mint, video, audio]
 snippet: "Browser video on Linux Mint froze because snd_hda_intel CORB timeouts stopped the audio clock; workaround: set options snd_hda_intel single_cmd=1, update-initramfs and reboot."
 ---
 
