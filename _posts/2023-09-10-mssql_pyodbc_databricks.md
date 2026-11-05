@@ -71,6 +71,7 @@ string specifying the SQL Server 17 driver,
 `"DRIVER=ODBC Driver 17 for SQL Server;..."`,
 like so:
 
+{% raw %}
 ```py
 server = "example-server.database.windows.net"
 db_name = "example-db"
@@ -81,6 +82,7 @@ conn = pyodbc.connect(conn_string)
 with conn:
   conn.execute("select * from table")
 ```
+{% endraw %}
 
 As a note, there's a newer version, `msodbcsql18` -- see
 [here the whole list](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16#ubuntu).  
